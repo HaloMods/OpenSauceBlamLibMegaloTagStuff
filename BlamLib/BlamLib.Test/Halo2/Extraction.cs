@@ -150,7 +150,7 @@ namespace BlamLib.Test
 			(Program.GetManager(game) as Managers.IVertexBufferController)
 				.VertexBufferCacheOpen(game);
 
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheExtractionMethod,
 				game, dir, map_names);
 
