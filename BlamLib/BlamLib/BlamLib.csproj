@@ -31,6 +31,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blam\Cache\CacheFileLanguagePack.cs" />
     <Compile Include="Blam\Cache\Tags\CacheTagsGen2nd.cs" />
     <Compile Include="Blam\Cache\Tags\CacheTagsGen3rd.cs" />
     <Compile Include="Blam\Cache\Tags\Code\CacheTagsGen3rd.cs" />
@@ -40,6 +41,15 @@
     <Compile Include="Blam\DataHandles\MapId.cs" />
     <Compile Include="Blam\DataHandles\ResourcePtr.cs" />
     <Compile Include="Blam\DataHandles\StringId.cs" />
+    <Compile Include="Blam\Halo4\Tags\Code\Interface.cs" />
+    <Compile Include="Blam\Halo4\Tags\Code\Multiplayer.cs" />
+    <Compile Include="Blam\Halo4\Tags\Code\Resources.cs" />
+    <Compile Include="Blam\Halo4\Tags\Definitions\Interface.cs" />
+    <Compile Include="Blam\Halo4\Tags\Definitions\Multiplayer.cs" />
+    <Compile Include="Blam\Halo4\Tags\Definitions\Resources.cs" />
+    <Compile Include="Blam\Halo4\Tags\Layout\Interface.cs" />
+    <Compile Include="Blam\Halo4\Tags\Layout\Multiplayer.cs" />
+    <Compile Include="Blam\Halo4\Tags\Layout\Resources.cs" />
     <Compile Include="Compression\LZMA.cs" />
     <Compile Include="Cryptography\MD5.cs" />
     <Compile Include="Cryptography\XXTEA.cs" />
@@ -363,12 +373,12 @@
     <Compile Include="Blam\Halo2\Tags\Resources.cs" />
     <Compile Include="Blam\Halo2\Tags\Scenario.cs" />
     <Compile Include="Blam\Halo2\Tags\Sound.cs" />
-	<Compile Include="Blam\Halo2\Tags\Code\Bsp.cs" />
+    <Compile Include="Blam\Halo2\Tags\Code\Bsp.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Effects.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Globals.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Misc.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Models.cs" />
-	<Compile Include="Blam\Halo2\Tags\Code\Resources.cs" />
+    <Compile Include="Blam\Halo2\Tags\Code\Resources.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Scenario.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Shaders.cs" />
     <Compile Include="Blam\Halo2\Tags\Code\Sound.cs" />
@@ -381,7 +391,7 @@
     <Compile Include="Blam\Halo2\Tags\Groups\TagGroupsCode.cs" />
     <Compile Include="Blam\Halo2\Tags\Groups\TagGroupsInit.cs" />
     <Compile Include="Blam\Halo2\Tags\Layout\AI.cs" />
-	<Compile Include="Blam\Halo2\Tags\Layout\Shaders.cs" />
+    <Compile Include="Blam\Halo2\Tags\Layout\Shaders.cs" />
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)' != 'DebugPublic' ">
     <Compile Include="Blam\Halo3\BLF.cs" />
@@ -561,9 +571,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Blam\Halo4\Tags\Code\" />
-    <Folder Include="Blam\Halo4\Tags\Definitions\" />
-    <Folder Include="Blam\Halo4\Tags\Layout\" />
     <Folder Include="Blam\HaloOdst\Tags\Code\" />
     <Folder Include="Blam\HaloOdst\Tags\Trace\" />
     <Folder Include="Blam\HaloReach\Tags\Code\" />

@@ -226,7 +226,7 @@ namespace BlamLib.Blam.Halo4
 			#endregion
 
 			#region Load tag names
-			using (var buffer = cache.DecryptCacheSegment(CacheSectionType.Tag, cache.HeaderHalo4.TagNamesBufferOffset, cache.HeaderHalo4.TagNamesBufferSize))
+			using (var buffer = cache.DecryptCacheSegmentStream(CacheSectionType.Tag, cache.HeaderHalo4.TagNamesBufferOffset, cache.HeaderHalo4.TagNamesBufferSize))
 			{
 				string tag_name;
 				foreach (var ci in items)
@@ -293,7 +293,9 @@ namespace BlamLib.Blam.Halo4
 		}
 		#endregion
 
-		internal IO.EndianReader DecryptCacheSegment(CacheSectionType section_type, int segment_offset, int segment_size)
+		public override bool ResourcesUseEncryption { get { return true; } }
+
+		internal override byte[] DecryptCacheSegmentBytes(CacheSectionType section_type, int segment_offset, int segment_size)
 		{
 			InputStream.Seek(segment_offset);
 			uint buffer_size = Util.Align(16, (uint)segment_size);
@@ -302,7 +304,7 @@ namespace BlamLib.Blam.Halo4
 			byte[] decrypted;
 			GameDefinition.SecurityAesDecrypt(engineVersion, section_type, encrypted, out decrypted);
 
-			return decrypted != null ? new IO.EndianReader(decrypted) : null;
+			return decrypted != null ? decrypted : null;
 		}
 
 		#region Header
@@ -328,7 +330,7 @@ namespace BlamLib.Blam.Halo4
 		#region StringIdManager
 		protected override IO.EndianReader GetStringIdsBuffer(ICacheHeaderStringId sid_header)
 		{
-			return DecryptCacheSegment(CacheSectionType.Debug, sid_header.StringIdsBufferOffset, sid_header.StringIdsBufferSize);
+			return DecryptCacheSegmentStream(CacheSectionType.Debug, sid_header.StringIdsBufferOffset, sid_header.StringIdsBufferSize);
 		}
 		#endregion
 
@@ -373,6 +375,7 @@ namespace BlamLib.Blam.Halo4
 			{
 				case "20810.12.09.22.1647.main":
 				case "21122.12.11.21.0101.main": // dlc_crimson
+				case "21165.12.12.12.0112.main": // TU2 / dlc SPOPS 1.5
 					engineVersion = BlamVersion.Halo4_Xbox;
 					break;
 
