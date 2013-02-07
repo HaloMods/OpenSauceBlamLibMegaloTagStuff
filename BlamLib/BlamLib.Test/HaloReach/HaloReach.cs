@@ -6,6 +6,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlamLib.Test
@@ -18,6 +19,8 @@ namespace BlamLib.Test
 		{
 			(Program.GetManager(BlamVersion.HaloReach_Beta) as Managers.IStringIdController)
 				.StringIdCacheOpen(BlamVersion.HaloReach_Beta);
+			(Program.GetManager(BlamVersion.HaloReach_Xbox) as Managers.IStringIdController)
+				.StringIdCacheOpen(BlamVersion.HaloReach_Xbox);
 
 			Directory.CreateDirectory(kTestResultsPath);
 		}
@@ -26,17 +29,21 @@ namespace BlamLib.Test
 		{
 			(Program.GetManager(BlamVersion.HaloReach_Beta) as Managers.IStringIdController)
 				.StringIdCacheClose(BlamVersion.HaloReach_Beta);
+			(Program.GetManager(BlamVersion.HaloReach_Xbox) as Managers.IStringIdController)
+				.StringIdCacheClose(BlamVersion.HaloReach_Xbox);
 		}
 
 		static bool MapNeedsUniqueName(string header_name)
 		{
 			switch (header_name)
 			{
+#if false
 				case "20_sword_slayer":
 				case "30_settlement":
 				case "70_boneyard":
 				case "ff10_prototype":
 				case "mainmenu":
+#endif
 				// dlc_defiant
 				case "condemned":
 				case "ff_unearthed":
@@ -126,10 +133,105 @@ namespace BlamLib.Test
 				if (MapNeedsUniqueName(header_name))
 					header_name = cache.GetUniqueName();
 
+#if false
+				var settings = new XmlWriterSettings();
+				settings.Indent = true;
+				settings.IndentChars = "\t";
+				using(var s = cache.DecryptCacheSegmentStream(Blam.CacheSectionType.Debug,
+					cache.HeaderHaloReach.StringIdsBufferOffset, cache.HeaderHaloReach.StringIdsBufferSize))
+				using(var stream = new StreamWriter(kTestResultsPath+"HaloReach_Xbox_StringId.xml"))
+				using (var xml = XmlWriter.Create(stream, settings))
+				{
+					xml.WriteStartDocument(true);
+					xml.WriteStartElement("stringIds");
+					xml.WriteAttributeString("game", "HaloReach_Xbox");
+					xml.WriteStartElement("sets");
+
+					for (int x = 0, set = 0, index = 0; x < cache.HeaderHaloReach.StringIdsCount; x++, index++)
+					{
+						string set_name = "";
+						switch (x)
+						{
+							case 0x0:
+								set = 0; set_name = "global";
+								goto case -1;
+							case 0x4AE: xml.WriteEndElement();
+								set = 1; set_name = "gui";
+								goto case -1;
+							case 0xB13: xml.WriteEndElement();
+								set = 2; set_name = "gui_alert";
+								goto case -1;
+							case 0xBEB: xml.WriteEndElement();
+								set = 3; set_name = "gui_dialog";
+								goto case -1;
+							case 0xC55: xml.WriteEndElement();
+								set = 4; set_name = "cui";
+								goto case -1;
+							case 0xD2E: xml.WriteEndElement();
+								set = 5; set_name = "cui_animation";
+								goto case -1;
+							case 0xD54: xml.WriteEndElement();
+								set = 6; set_name = "cui_shader";
+								goto case -1;
+							case 0xD59: xml.WriteEndElement();
+								set = 7; set_name = "properties";
+								goto case -1;
+							case 0x1416: xml.WriteEndElement();
+								set = 8; set_name = "components";
+								goto case -1;
+							case 0x1585: xml.WriteEndElement();
+								set = 9; set_name = "game_engine";
+								goto case -1;
+							case 0x1599: xml.WriteEndElement();
+								set = 10; set_name = "game_start";
+								goto case -1;
+							//case 0x: xml.WriteEndElement();
+							//	set = 11; set_name = "achievement";
+							//	goto case -1;
+							case 0x15FB: xml.WriteEndElement();
+								set = 12; set_name = "saved_game";
+								goto case -1;
+							case 0x1613: xml.WriteEndElement();
+								set = 13; set_name = "";
+								goto case -1;
+							case 0x1620: xml.WriteEndElement();
+								set = 14; set_name = "ai_stimulus";
+								goto case -1;
+							case 0x1649: xml.WriteEndElement();
+								set = 15; set_name = "incident";
+								goto case -1;
+
+							case 0x16AA: xml.WriteEndElement();
+								set = 0; set_name = "cache";
+								index = 0x4AE;
+								xml.WriteStartElement("Set"); xml.WriteAttributeString("key", set.ToString());
+								xml.WriteAttributeString("value", set_name);
+								break;
+
+							case -1:
+								index = 0;
+								xml.WriteStartElement("Set"); xml.WriteAttributeString("key", set.ToString());
+								xml.WriteAttributeString("value", set_name);
+								break;
+						}
+						xml.WriteStartElement("entry");
+						xml.WriteAttributeString("key", ((set << 17) | index).ToString("X8"));
+						xml.WriteAttributeString("value", s.ReadCString());
+						xml.WriteEndElement();
+					}
+					xml.WriteEndElement();
+
+					xml.WriteEndElement();
+					xml.WriteEndElement();
+					xml.WriteEndDocument();
+				}
+#endif
+#if true
 				Blam.CacheFile.OutputStringIds(cache,
 					BuildResultPath(kTestResultsPath, args.Game, header_name, "string_ids", "txt"), true);
 				Blam.CacheFile.OutputTags(cache,
 					BuildResultPath(kTestResultsPath, args.Game, header_name, null, "txt"));
+#endif
 			}
 
 			args.SignalFinished();
@@ -137,14 +239,14 @@ namespace BlamLib.Test
 		[TestMethod]
 		public void HaloReachTestCacheOutputXbox()
 		{
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.HaloReach_Xbox, kDirectoryXbox, kMapNames_Retail);
 		}
 		[TestMethod]
 		public void HaloReachTestCacheOutputXboxBeta()
 		{
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.HaloReach_Beta, kDirectoryXbox, kMapNames_Delta);
 		}
@@ -383,7 +485,7 @@ namespace BlamLib.Test
 		[TestMethod]
 		public void HaloReachTestDumpScriptGraphs()
 		{
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheDumpScriptGraphs,
 				BlamVersion.HaloReach_Xbox, kDirectoryXbox, kMapNames_Retail);
 		}

@@ -141,7 +141,7 @@ namespace BlamLib.Test
 
 			return args;
 		}
-		public static void TestThreadedMethod(TestContext tc, WaitCallback method,
+		public static void TestMethodThreaded(TestContext tc, WaitCallback method,
 			BlamVersion game, string dir, params string[] map_names)
 		{
 			var args = TestMethodBuildArgs(tc, game, dir, map_names);

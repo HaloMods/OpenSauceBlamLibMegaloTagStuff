@@ -130,10 +130,10 @@ namespace BlamLib.Test
 			(Program.GetManager(BlamVersion.Halo2_Xbox) as Managers.IStringIdController)
 				.StringIdCacheOpen(BlamVersion.Halo2_Xbox);
 
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.Halo2_Xbox, kMapsDirectoryXbox, kMapNames);
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.Halo2_Xbox, kMapsDirectoryXbox, kMapNamesXbox);
 
@@ -146,10 +146,10 @@ namespace BlamLib.Test
 			(Program.GetManager(BlamVersion.Halo2_PC) as Managers.IStringIdController)
 				.StringIdCacheOpen(BlamVersion.Halo2_PC);
 
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.Halo2_PC, kMapsDirectoryPc, kMapNames);
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.Halo2_PC, kMapsDirectoryPc, kMapNamesPc);
 
@@ -162,7 +162,7 @@ namespace BlamLib.Test
 			(Program.GetManager(BlamVersion.Halo2_Alpha) as Managers.IStringIdController)
 				.StringIdCacheOpen(BlamVersion.Halo2_Alpha);
 
-			CacheFileOutputInfoArgs.TestThreadedMethod(TestContext,
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
 				CacheOutputInformationMethod,
 				BlamVersion.Halo2_Alpha, kMapsDirectoryXboxAlpha, kMapNamesXboxAlpha);
 

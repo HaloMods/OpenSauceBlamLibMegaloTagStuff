@@ -153,6 +153,7 @@ namespace BlamLib.Blam.HaloReach
 			//muxg.Definition = new Tags.mux_generator_group().State;
 // 			nclt.Definition = new Tags.new_cinematic_lighting_group().State;
 			//pach.Definition = new Tags.tag_package_manifest_group().State;
+			//patg.Definition = new Tags.patch_globals_group().State;
 			//pcec.Definition = new Tags.pgcr_enemy_to_category_mapping_definition_group().State;
 			//pecp.Definition = new Tags.particle_emitter_custom_points_group().State;
 // 			perf.Definition = new Tags.performance_throttles_group().State;
