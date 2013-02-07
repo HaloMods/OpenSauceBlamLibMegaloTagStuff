@@ -50,6 +50,15 @@
     <Compile Include="Blam\Halo4\Tags\Layout\Interface.cs" />
     <Compile Include="Blam\Halo4\Tags\Layout\Multiplayer.cs" />
     <Compile Include="Blam\Halo4\Tags\Layout\Resources.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Code\Interface.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Code\Multiplayer.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Code\Resources.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Definitions\Interface.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Definitions\Multiplayer.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Definitions\Resources.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Layout\Interface.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Layout\Multiplayer.cs" />
+    <Compile Include="Blam\HaloReach\Tags\Layout\Resources.cs" />
     <Compile Include="Compression\LZMA.cs" />
     <Compile Include="Cryptography\MD5.cs" />
     <Compile Include="Cryptography\XXTEA.cs" />
@@ -573,9 +582,6 @@
   <ItemGroup>
     <Folder Include="Blam\HaloOdst\Tags\Code\" />
     <Folder Include="Blam\HaloOdst\Tags\Trace\" />
-    <Folder Include="Blam\HaloReach\Tags\Code\" />
-    <Folder Include="Blam\HaloReach\Tags\Definitions\" />
-    <Folder Include="Blam\HaloReach\Tags\Layout\" />
     <Folder Include="Blam\HaloReach\Tags\Trace\" />
     <Folder Include="Blam\Stubbs\Tags\Code\" />
     <Folder Include="Blam\Stubbs\Tags\Definitions\" />
