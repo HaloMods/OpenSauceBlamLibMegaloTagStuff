@@ -568,6 +568,7 @@ namespace BlamLib.Blam.Cache
 
 	class CacheFileLanguagePackResourceGen3 : CacheFileLanguagePackResource
 	{
+		internal const int kGlobalsOffsetHaloReach = 0x288;
 		internal const int kGlobalsOffsetHalo4 = 0x2B4;
 
 		TI.Skip ReferencesHash, StringsHash;

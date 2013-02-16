@@ -43,7 +43,7 @@ namespace BlamLib.Blam.Halo4.Tags
 
 	// see: s_text_value_pair_blocks_block_UNUSED in user_interface_screen_widget_definition
 	#region text_value_pair_definition_group
-	[TI.TagGroup((int)TagGroups.Enumerated.sily, -1, 32)]
+	[TI.TagGroup((int)TagGroups.Enumerated.sily, -1, 28)]
 	public partial class text_value_pair_definition_group : TI.Definition
 	{
 		#region text_value_pair_reference_block

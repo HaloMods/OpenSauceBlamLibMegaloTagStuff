@@ -141,6 +141,18 @@ namespace BlamLib.Blam.Halo4.Tags
 	#region megalo_string_id_table
 	partial class megalo_string_id_table_group : ITempToStreamInterface
 	{
+		#region megalo_string_id_table_C_block
+		partial class megalo_string_id_table_C_block
+		{
+			public void ToStream(StreamWriter s, 
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteLine("{0}\t{1}",
+					Unknown0.Value.ToString("X8"), Unknown4.Value.ToString("X8"));
+			}
+		};
+		#endregion
+
 		public void ToStream(StreamWriter s,
 				Managers.TagManager tag, TI.Definition owner)
 		{
@@ -153,6 +165,16 @@ namespace BlamLib.Blam.Halo4.Tags
 				s.Write(x.ToString("X4"));
 				s.Write("\t");
 				s.WriteLine(Names[x]);
+			}
+			s.WriteLine();
+
+			s.WriteLine(k_ident+"BlockC");
+			for (int x = 0; x < BlockC.Count; x++)
+			{
+				s.Write(k_ident+"\t");
+				s.Write(x.ToString("X4"));
+				s.Write("\t");
+				BlockC[x].ToStream(s, tag, this);
 			}
 			s.WriteLine();
 		}

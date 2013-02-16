@@ -19,19 +19,6 @@ namespace BlamLib.Blam.HaloReach.Tags
 	#region game_medal_globals
 	partial class game_medal_globals_group : ITempToStreamInterface
 	{
-		#region game_medal_globals_category_block
-		partial class game_medal_globals_category_block
-		{
-			public void ToStream(StreamWriter s, 
-				Managers.TagManager tag, TI.Definition owner)
-			{
-				s.WriteLine("{0}\t{1}\t{2}\t{3}",
-					Unknown8, Points, 
-					Name, Unknown4);
-			}
-		};
-		#endregion
-
 		#region game_medal_globals_medals_block
 		partial class game_medal_globals_medals_block
 		{
@@ -39,9 +26,10 @@ namespace BlamLib.Blam.HaloReach.Tags
 				Managers.TagManager tag, TI.Definition owner)
 			{
 				s.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}",
-					Name, 
-					Unknown8.Value.ToString("X4"), UnknownA.Value.ToString("X2"), 
-					CategoryIndex, UnknownC, Points);
+					Name,
+					Unknown8.Value.ToString(), UnknownC.Value.ToString(),
+					Unknown10.Value.ToString("X4"), Unknown12.Value.ToString("X2"),
+					Unknown14.Value.ToString("X8"));
 			}
 		};
 		#endregion
@@ -50,16 +38,6 @@ namespace BlamLib.Blam.HaloReach.Tags
 				Managers.TagManager tag, TI.Definition owner)
 		{
 			const string k_ident = "\t";
-
-			s.WriteLine(k_ident+"Categories");
-			for (int x = 0; x < Categories.Count; x++)
-			{
-				s.Write(k_ident+"\t");
-				s.Write(x.ToString("X4"));
-				s.Write("\t");
-				Categories[x].ToStream(s, tag, this);
-			}
-			s.WriteLine();
 
 			s.WriteLine(k_ident+"Medals");
 			for (int x = 0; x < Medals.Count; x++)
@@ -87,10 +65,12 @@ namespace BlamLib.Blam.HaloReach.Tags
 
 				s.WriteLine(Name);
 				s.WriteLine(k_ident+
-					"Block0C={0}\t" + "Block18={1}\t" + "Block24={2}\t" + 
-					"Block30={3}\t" + "Block3C={4}",
-					BlockC.Count, Block18.Count, Block24.Count, 
-					Block30.Count, Block3C.Count);
+					//"Block0C={0}\t" + "Block18={1}\t" + "Block24={2}\t" + 
+					//"Block30={3}",
+					//BlockC.Count, Block18.Count, Block24.Count, 
+					"Block0C={0}\t" + "Block24={1}",
+					BlockC.Count, 
+					Block30.Count);
 			}
 		};
 		#endregion
@@ -195,16 +175,6 @@ namespace BlamLib.Blam.HaloReach.Tags
 			public void ToStream(StreamWriter s,
 				Managers.TagManager tag, TI.Definition owner)
 			{
-				TI.StringId name = DescriptionText;
-				if (name.Handle.IsNull) name = HeaderText;
-				if (name.Handle.IsNull) name = HelpText;
-				if (name.Handle.IsNull) name = Icon;
-
-				string name_str = "<unknown>";
-				if (!name.Handle.IsNull) name_str = name.ToString();
-
-				s.Write("{0}\t", name_str);
-
 				int type_index = TypeIndex.Value;
 				if (type_index < 0)
 					s.Write("NONE");
@@ -328,16 +298,6 @@ namespace BlamLib.Blam.HaloReach.Tags
 				s.Write(x.ToString("X4"));
 				s.Write("\t");
 				VehicleSets[x].ToStream(s, tag, this);
-			}
-			s.WriteLine();
-
-			s.WriteLine(k_ident+"EquipmentSets");
-			for (int x = 0; x < EquipmentSets.Count; x++)
-			{
-				s.Write(k_ident+"\t");
-				s.Write(x.ToString("X4"));
-				s.Write("\t");
-				EquipmentSets[x].ToStream(s, tag, this);
 			}
 			s.WriteLine();
 			#endregion

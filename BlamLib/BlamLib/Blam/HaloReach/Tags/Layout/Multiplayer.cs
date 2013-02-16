@@ -9,6 +9,7 @@ using TI = BlamLib.TagInterface;
 
 namespace BlamLib.Blam.HaloReach.Tags
 {
+	// TODO: Reach-ify
 	#region game_engine_globals
 	partial class game_engine_globals_group
 	{
@@ -39,6 +40,7 @@ namespace BlamLib.Blam.HaloReach.Tags
 	};
 	#endregion
 
+	// TODO: Reach-ify
 	#region game_engine_settings_definition
 	partial class game_engine_settings_definition_group
 	{
@@ -85,39 +87,24 @@ namespace BlamLib.Blam.HaloReach.Tags
 	#region game_medal_globals
 	partial class game_medal_globals_group
 	{
-		#region game_medal_globals_category_block
-		partial class game_medal_globals_category_block
-		{
-			public game_medal_globals_category_block() : base(4)
-			{
-				Add(Name = new TI.StringId());
-				Add(Unknown4 = new TI.StringId());
-				Add(Unknown8 = new TI.ShortInteger());
-				Add(Points = new TI.ShortInteger());
-			}
-		};
-		#endregion
-
 		#region game_medal_globals_medals_block
 		partial class game_medal_globals_medals_block
 		{
-			public game_medal_globals_medals_block() : base(8)
+			public game_medal_globals_medals_block() : base(7)
 			{
 				Add(Name = new TI.StringId());
 				Add(Description = new TI.StringId());
-				Add(Unknown8 = new TI.ShortInteger());
-				Add(UnknownA = new TI.Flags(TI.FieldType.ByteFlags));
-				Add(TI.Pad.Byte);
-				Add(UnknownC = new TI.LongInteger());
-				Add(CategoryIndex = new TI.BlockIndex());
-				Add(Points = new TI.ShortInteger());
+				Add(Unknown8 = new TI.Real());
+				Add(UnknownC = new TI.Real());
+				Add(Unknown10 = new TI.ShortInteger());
+				Add(Unknown12 = new TI.Flags(TI.FieldType.WordFlags));
+				Add(Unknown14 = new TI.LongInteger());
 			}
 		};
 		#endregion
 
-		public game_medal_globals_group() : base(2)
+		public game_medal_globals_group() : base(1)
 		{
-			Add(Categories = new TI.Block<game_medal_globals_category_block>(this, 0));
 			Add(Medals = new TI.Block<game_medal_globals_medals_block>(this, 0));
 		}
 	};
@@ -141,122 +128,33 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			#endregion
 
-			// TODO: def different in Reach
-			#region unknown_18_block
-			partial class unknown_18_block
-			{
-				public unknown_18_block() : base(8)
-				{
-//					Add(SuppressedIncident = new TI.TagReference(this, TagGroups.sigd));
-					Add(Unknown10 = new TI.LongInteger());
-					Add(Unknown14 = new TI.LongInteger()); // unknown
-					Add(Unknown18 = new TI.StringId());
-					Add(Unknown1C = new TI.LongInteger()); // unknown
-					Add(CuiScreen = new TI.TagReference(this, TagGroups.cusc));
-//					Add(SoundResponse = new TI.TagReference(this, TagGroups.sgrp));
-					Add(Unknown40 = new TI.LongInteger()); // unknown
-				}
-			}
-			#endregion
-
-			#region unknown_24_block
-			partial class unknown_24_block
-			{
-				public unknown_24_block() : base(9)
-				{
-					Add(Unknown0 = new TI.StringId());
-					Add(TI.Pad.BlockHalo3);
-						// byte_flags
-						// PAD24
-					Add(TI.Pad.BlockHalo3);
-					Add(TI.Pad.BlockHalo3);
-					Add(TI.Pad.BlockHalo3);
-					Add(TI.Pad.BlockHalo3);
-					Add(TI.Pad.BlockHalo3);
-					Add(TI.Pad.BlockHalo3);
-					Add(TI.Pad.BlockHalo3);
-				}
-			}
-			#endregion
-
 			#region unknown_30_block
 			partial class unknown_30_block
 			{
 				#region unknown_4_block
 				partial class unknown_4_block
 				{
-					public unknown_4_block() : base(6)
+					public unknown_4_block() : base(4)
 					{
 						Add(Flags = new TI.Flags(TI.FieldType.ByteFlags));
 						Add(TI.Pad._24);
 						Add(Unknown4 = new TI.LongInteger());	// for multikills this is the count
 						Add(Unknown8 = new TI.StringId());		// for multikills this is 'kill', so it's probably the incident filter
-						Add(UnknownC = new TI.LongInteger()); // unknown
-						Add(Unknown10 = new TI.LongInteger());// unknown
 					}
 				}
 				#endregion
 
 				public unknown_30_block() : base(3)
 				{
-					Add(Unknown0 = new TI.LongInteger()); // unknown
-					Add(Block4 = new TI.Block<unknown_4_block>(this, 0));
-					Add(Unknown10 = new TI.LongInteger());
-					Add(Unknown14 = new TI.LongInteger()); // unknown
-					Add(Unknown18 = new TI.StringId());
-					Add(Unknown1C = new TI.LongInteger()); // unknown
-					Add(CuiScreen = new TI.TagReference(this, TagGroups.cusc));
-					Add(Unknown30 = new TI.TagReference(this));
-					Add(Unknown44 = new TI.LongInteger()); // unknown
-				}
-			}
-			#endregion
-
-			// TODO: def different in Reach
-			#region unknown_3C_block
-			partial class unknown_3C_block
-			{
-				#region unknown_8_block
-				partial class unknown_8_block
-				{
-					public unknown_8_block() : base(3)
-					{
-						Add(Unknown0 = new TI.StringId());
-						Add(Unknown4 = new TI.LongInteger()); // unknown
-						Add(Unknown8 = new TI.LongInteger()); // unknown
-					}
-				}
-				#endregion
-
-				public unknown_3C_block() : base(22)
-				{
 					Add(Unknown0 = new TI.Flags(TI.FieldType.ByteFlags));
 					Add(Unknown1 = new TI.Flags(TI.FieldType.ByteFlags));
 					Add(TI.Pad.Word);
-					Add(Unknown4 = new TI.LongInteger());
-					Add(Block8 = new TI.Block<unknown_8_block>(this, 0));
-					Add(Unknown14 = new TI.LongInteger()); // unknown
-					Add(Unknown18 = new TI.LongInteger()); // unknown
-					Add(Unknown1C = new TI.StringId());
-					Add(Unknown20 = new TI.LongInteger()); // unknown
-					Add(CuiScreen = new TI.TagReference(this, TagGroups.cusc));
-//					Add(SoundResponse = new TI.TagReference(this, TagGroups.sgrp));
-					Add(Unknown44 = new TI.LongInteger()); // unknown
-					Add(Unknown48 = new TI.LongInteger()); // unknown
-					Add(Unknown4C = new TI.Flags(TI.FieldType.ByteFlags));
-					Add(TI.Pad.Byte);
-					Add(Unknown4E = new TI.Flags(TI.FieldType.ByteFlags));
-					Add(TI.Pad.Byte);
-					Add(Unknown50 = new TI.StringId());
-					Add(Unknown54 = new TI.LongInteger()); // unknown
-					Add(CuiScreen2 = new TI.TagReference(this, TagGroups.cusc));
-					Add(Unknown68 = new TI.TagReference(this));
-					Add(Unknown78 = new TI.LongInteger()); // unknown
+					Add(Block4 = new TI.Block<unknown_4_block>(this, 0));
 				}
 			}
 			#endregion
 
-			public incident_globals_definition_0_block() : base(11)
+			public incident_globals_definition_0_block() : base(9)
 			{
 				Add(Name = new TI.StringId());
 				Add(Unknown4 = new TI.Flags(TI.FieldType.ByteFlags));
@@ -264,34 +162,28 @@ namespace BlamLib.Blam.HaloReach.Tags
 				Add(Unknown8 = new TI.Flags(TI.FieldType.ByteFlags));
 				Add(TI.Pad._24);
 				Add(BlockC = new TI.Block<unknown_C_block>(this, 0));
-				Add(Block18 = new TI.Block<unknown_18_block>(this, 0));
-				Add(Block24 = new TI.Block<unknown_24_block>(this, 0));
+				Add(TI.Pad.BlockHalo3); // 0x38?
+				// Actually 0x24
 				Add(Block30 = new TI.Block<unknown_30_block>(this, 0));
-				Add(Block3C = new TI.Block<unknown_3C_block>(this, 0));
-				Add(TI.Pad.BlockHalo3); // 0x54
+				// Actually 0x30
+				Add(TI.Pad.BlockHalo3); // 0x30
 					// byte_flags
 					// byte_flags
 					// PAD16
-					// unknown[0xC]
+					// string_id?
 					// string_id
 					// string_id
-					// string_id
-					// unknown[0x8]
-					// tag_block
-					// unknown[0x4]
+					// unknown[0x1C]
 					// int16
 					// PAD16?
-					// tag_block
-					// tag_reference<sirg> sound_incident_response
 			}
 		};
 		#endregion
 
-		public incident_globals_definition_group() : base(3)
+		public incident_globals_definition_group() : base(2)
 		{
+			Add(new TI.Pad(4)); // only seen as zero
 			Add(Block0 = new TI.Block<incident_globals_definition_0_block>(this, 0));
-			Add(UnknownC = new TI.TagReference(this, TagGroups.unic));
-			Add(Unknown1C = new TI.TagReference(this, TagGroups.unic));
 		}
 	};
 	#endregion
@@ -311,21 +203,9 @@ namespace BlamLib.Blam.HaloReach.Tags
 	#region megalo_string_id_table
 	partial class megalo_string_id_table_group
 	{
-		#region megalo_string_id_table_C_block
-		partial class megalo_string_id_table_C_block
-		{
-			public megalo_string_id_table_C_block() : base(2)
-			{
-				Add(Unknown0 = new TI.LongInteger());
-				Add(Unknown4 = new TI.LongInteger());
-			}
-		};
-		#endregion
-
-		public megalo_string_id_table_group() : base(2)
+		public megalo_string_id_table_group() : base(1)
 		{
 			Add(Names = new TI.Block<field_block<TI.StringId>>(this, 0));
-			Add(BlockC = new TI.Block<megalo_string_id_table_C_block>(this, 0));
 		}
 	};
 	#endregion
@@ -350,12 +230,9 @@ namespace BlamLib.Blam.HaloReach.Tags
 			public multiplayer_object_type_mapping_block() : base(7)
 			{
 				Add(TypeIndex = new TI.BlockIndex(TI.FieldType.LongBlockIndex));
-				Add(DescriptionText = new TI.StringId());
-				Add(HeaderText = new TI.StringId());
-				Add(HelpText = new TI.StringId());
+				Add(TI.Pad.DWord); // Only ever seen as zero. Probably an unused string id
 				Add(Unknown10 = new TI.Real());
 				Add(Unknown14 = new TI.LongInteger());
-				Add(Icon = new TI.StringId());
 			}
 		};
 		#endregion
@@ -382,7 +259,7 @@ namespace BlamLib.Blam.HaloReach.Tags
 		};
 		#endregion
 
-		public multiplayer_object_type_list_group() : base(15)
+		public multiplayer_object_type_list_group() : base(9)
 		{
 			Add(TypeList = new TI.Block<multiplayer_object_type_block>(this, 0));
 			Add(WeaponsList = new TI.Block<multiplayer_object_type_mapping_block>(this, 0));
@@ -391,14 +268,8 @@ namespace BlamLib.Blam.HaloReach.Tags
 			Add(EquipmentList = new TI.Block<multiplayer_object_type_mapping_block>(this, 0));
 			Add(WeaponSets = new TI.Block<multiplayer_object_type_set_block>(this, 0));
 			Add(VehicleSets = new TI.Block<multiplayer_object_type_set_block>(this, 0));
-			Add(EquipmentSets = new TI.Block<multiplayer_object_type_set_block>(this, 0));
 			Add(Unknown60 = new TI.LongInteger());
 			Add(Unknown64 = new TI.LongInteger());
-			Add(Unknown68 = new TI.StringId());
-			Add(Unknown6C = new TI.StringId());
-			Add(Unknown70 = new TI.LongInteger());
-			Add(Unknown74 = new TI.Real());
-			Add(new TI.Pad(12));
 		}
 	};
 	#endregion

@@ -67,6 +67,8 @@ namespace BlamLib.Test
 	{
 		internal const string kTestResultsPath = TestLibrary.kTestResultsPath + @"HaloReach\";
 
+		const string kTagDumpPath = kTestResultsPath + @"tags\";
+
 		const string kDirectoryXbox = @"C:\Mount\A\Bungie\Games\HaloReach\Xbox\";
 	};
 

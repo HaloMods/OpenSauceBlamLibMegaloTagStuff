@@ -43,16 +43,16 @@ namespace BlamLib.Blam.HaloReach.Tags
 
 	// see: s_text_value_pair_blocks_block_UNUSED in user_interface_screen_widget_definition
 	#region text_value_pair_definition_group
-	[TI.TagGroup((int)TagGroups.Enumerated.sily, -1, 32)]
+	[TI.TagGroup((int)TagGroups.Enumerated.sily, -1, 24)]
 	public partial class text_value_pair_definition_group : TI.Definition
 	{
 		#region text_value_pair_reference_block
-		[TI.Definition(-1, 24)]
+		[TI.Definition(-1, 20)]
 		public partial class text_value_pair_reference_block : TI.Definition
 		{
 			public TI.Flags Flags;
+			public TI.Enum Type;
 			public TI.LongInteger Integer;
-			public TI.Real Real;
 			public TI.StringId StringId;
 			public TI.StringId Name, Description;
 		};
@@ -60,7 +60,6 @@ namespace BlamLib.Blam.HaloReach.Tags
 
 		public TI.Enum Parameter;
 		public TI.StringId Title, Description;
-		public TI.Enum Type;
 		public TI.Block<text_value_pair_reference_block> Values;
 	};
 	#endregion

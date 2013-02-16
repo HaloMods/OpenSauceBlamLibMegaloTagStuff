@@ -116,10 +116,8 @@ namespace BlamLib.Blam.HaloReach.Tags
 
 				s.WriteLine(Name);
 				s.WriteLine(k_ident+
-					"Integer={0}\t" + "Real={1}\t" + 
-					"StringId={2}\t" + "Flags={3}\t",
-					Integer.Value.ToString("X8"), Real.Value.ToString("r"), 
-					StringId, Flags);
+					"Type={0}\t" + "Integer={1}\t" + "StringId={2}\t" + "Flags={3}\t",
+					Type, Integer.Value.ToString("X8"), StringId, Flags);
 			}
 		};
 		#endregion
@@ -130,7 +128,6 @@ namespace BlamLib.Blam.HaloReach.Tags
 			const string k_ident = "\t";
 
 			s.WriteLine(k_ident+"Title={0}", Title);
-			s.WriteLine(k_ident+"Type={0}\tParam={1}", Type, Parameter);
 			s.WriteLine(k_ident+"Values");
 			for (int x = 0; x < Values.Count; x++)
 			{

@@ -37,13 +37,9 @@ namespace BlamLib.Blam.HaloReach.Tags
 			{
 				const string k_ident = "\t\t\t";
 
-				if (Unknown8.Value != 0)
-					System.Diagnostics.Debugger.Break();
 				s.WriteLine(k_ident+
-					"Unknown8={2}\t" +
 					"Component={0}\t" + "Property={1}",
-					Component, Property,
-					Unknown8.Value.ToString("X8"));
+					Component, Property);
 			}
 		}
 		#endregion
