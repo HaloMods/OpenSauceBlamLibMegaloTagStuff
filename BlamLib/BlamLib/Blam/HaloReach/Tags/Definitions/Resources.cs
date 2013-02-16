@@ -11,7 +11,7 @@ using TI = BlamLib.TagInterface;
 namespace BlamLib.Blam.HaloReach.Tags
 {
 	#region multilingual_unicode_string_list
-	[TI.TagGroup((int)TagGroups.Enumerated.unic, -1, 112)]
+	[TI.TagGroup((int)TagGroups.Enumerated.unic, -1, 88)]
 	public partial class multilingual_unicode_string_list_group : TI.Definition, Cache.IMultilingualUnicodeStringList
 	{
 		#region multilingual_unicode_string_reference_block
@@ -31,11 +31,10 @@ namespace BlamLib.Blam.HaloReach.Tags
 		#endregion
 
 		#region multilingual_unicode_string_list_C_block
-		[TI.Definition(-1, 12)]
+		[TI.Definition(-1, 8)]
 		public partial class multilingual_unicode_string_list_C_block : TI.Definition
 		{
 			public TI.StringId Component, Property;
-			public TI.LongInteger Unknown8;
 		}
 		#endregion
 

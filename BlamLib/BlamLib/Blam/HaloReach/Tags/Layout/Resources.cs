@@ -29,11 +29,10 @@ namespace BlamLib.Blam.HaloReach.Tags
 		#region multilingual_unicode_string_list_C_block
 		partial class multilingual_unicode_string_list_C_block
 		{
-			public multilingual_unicode_string_list_C_block() : base(3)
+			public multilingual_unicode_string_list_C_block() : base(2)
 			{
 				Add(Component = new TI.StringId());
 				Add(Property = new TI.StringId());
-				Add(Unknown8 = new TI.LongInteger());
 			}
 		}
 		#endregion

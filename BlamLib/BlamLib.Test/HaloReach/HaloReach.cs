@@ -11,6 +11,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlamLib.Test
 {
+	using GameTagGroups = Blam.HaloReach.TagGroups;
+	using GameTags = Blam.HaloReach.Tags;
+
 	[TestClass]
 	public partial class HaloReach : BaseTestClass
 	{
@@ -23,6 +26,7 @@ namespace BlamLib.Test
 				.StringIdCacheOpen(BlamVersion.HaloReach_Xbox);
 
 			Directory.CreateDirectory(kTestResultsPath);
+			Directory.CreateDirectory(kTagDumpPath);
 		}
 		[ClassCleanup]
 		public static void Dispose()
@@ -149,6 +153,167 @@ namespace BlamLib.Test
 				BlamVersion.HaloReach_Beta, kDirectoryXbox, kMapNames_Delta);
 		}
 		#endregion
+
+		static readonly string[] kMapNames_MegaloData = {
+		//	@"Retail\maps\20_sword_slayer.map",
+
+		//	@"Retail\maps\70_boneyard.map",
+
+			@"Retail\dlc_noble\dlc_invasion.map",
+			@"Retail\dlc_noble\dlc_medium.map",
+			@"Retail\dlc_noble\dlc_slayer.map",
+
+			@"Retail\dlc_defiant\condemned.map",
+			@"Retail\dlc_defiant\trainingpreserve.map",
+
+		//	@"Retail\maps\mainmenu.map", // only use for sily
+		};
+		static readonly List<TagInterface.TagGroup> kMegaloGroupTags = new List<TagInterface.TagGroup> {
+			GameTagGroups.gmeg,
+			GameTagGroups.ingd,
+			GameTagGroups.mgls,
+			GameTagGroups.msit,
+			GameTagGroups.motl,
+		};
+		static void CacheOutputMegaloInformationMethod(object param)
+		{
+			var args = param as CacheFileOutputInfoArgs;
+
+			using (var handler = new CacheHandler<Blam.HaloReach.CacheFile>(args.Game, args.MapPath))
+			{
+				handler.Read();
+				var cache = handler.CacheInterface;
+
+				string header_name = cache.Header.Name;
+				if (MapNeedsUniqueName(header_name))
+					header_name = cache.GetUniqueName();
+
+				string results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "megalo", "txt");
+				using (var s = new System.IO.StreamWriter(results_path))
+				{
+					foreach (var tag in cache.IndexHaloReach.Tags)
+					{
+						if (!kMegaloGroupTags.Contains(tag.GroupTag)) continue;
+
+						var index = cache.TagIndexManager.Open(tag.Datum);
+						var man = cache.TagIndexManager[index];
+						var def = man.TagDefinition;
+						var to_stream = def as GameTags.ITempToStreamInterface;
+
+						if (to_stream != null)
+						{
+							s.WriteLine("{0}\t{1}", man.GroupTag.TagToString(), man.Name);
+							to_stream.ToStream(s, man, null);
+						}
+
+						cache.TagIndexManager.Unload(index);
+					}
+				}
+			}
+
+			args.SignalFinished();
+		}
+		[TestMethod]
+		public void HaloReachDumpMegloData()
+		{
+			CacheFileOutputInfoArgs.TestMethodThreaded(TestContext,
+				CacheOutputMegaloInformationMethod,
+				BlamVersion.HaloReach_Xbox, kDirectoryXbox, kMapNames_MegaloData);
+		}
+
+		static readonly List<TagInterface.TagGroup> kInterfaceGroupTags = new List<TagInterface.TagGroup> {
+			GameTagGroups.goof,
+			GameTagGroups.sily,
+		};
+		static void CacheRebuildUnicTagsMethod(object param)
+		{
+			var args = param as CacheFileOutputInfoArgs;
+
+			using (var handler = new CacheHandler<Blam.HaloReach.CacheFile>(args.Game, args.MapPath))
+			{
+				handler.Read();
+				var cache = handler.CacheInterface;
+
+				string header_name = cache.Header.Name;
+				if (MapNeedsUniqueName(header_name))
+					header_name = cache.GetUniqueName();
+
+				Blam.Cache.CacheItemGen3 game_globals = null;
+				foreach (var tag in cache.IndexHaloReach.Tags)
+				{
+					if (tag.GroupTag == GameTagGroups.matg)
+					{
+						game_globals = tag as Blam.Cache.CacheItemGen3;
+						break;
+					}
+				}
+				Assert.IsNotNull(game_globals);
+
+				cache.InputStream.Seek(game_globals.Offset + Blam.Cache.CacheFileLanguagePackResourceGen3.kGlobalsOffsetHaloReach);
+				var lang_pack_english = new Blam.Cache.CacheFileLanguagePackResourceGen3(null);
+				lang_pack_english.Read(cache.InputStream);
+				lang_pack_english.ReadFromCache(cache);
+				lang_pack_english.ToString();
+
+				string results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "unic", "txt");
+				using (var s = new System.IO.StreamWriter(results_path, false, System.Text.Encoding.UTF8))
+				{
+					foreach (var tag in cache.IndexHaloReach.Tags)
+					{
+						if (tag.GroupTag != GameTagGroups.unic) continue;
+
+						var index = cache.TagIndexManager.Open(tag.Datum);
+						var man = cache.TagIndexManager[index];
+						var def = man.TagDefinition;
+						var unic = def as GameTags.multilingual_unicode_string_list_group;
+
+						if (unic != null)
+						{
+							s.WriteLine("{0}\t{1}", man.GroupTag.TagToString(), man.Name);
+							unic.ReconstructHack(cache, lang_pack_english);
+							unic.ToStream(s, man, null);
+						}
+
+						cache.TagIndexManager.Unload(index);
+					}
+				}
+
+				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "interface", "txt");
+				using (var s = new System.IO.StreamWriter(results_path))
+				{
+					foreach (var tag in cache.IndexHaloReach.Tags)
+					{
+						if (!kInterfaceGroupTags.Contains(tag.GroupTag)) continue;
+
+						var index = cache.TagIndexManager.Open(tag.Datum);
+						var man = cache.TagIndexManager[index];
+						var def = man.TagDefinition;
+						var sily = def as GameTags.text_value_pair_definition_group;
+
+						if (sily != null)
+						{
+							s.WriteLine("{0}\t{1}", man.GroupTag.TagToString(), man.Name);
+							sily.ToStream(s, man, null);
+						}
+						else
+						{
+							var to_stream = def as GameTags.ITempToStreamInterface;
+							s.WriteLine("{0}\t{1}", man.GroupTag.TagToString(), man.Name);
+							to_stream.ToStream(s, man, null);
+						}
+
+						cache.TagIndexManager.Unload(index);
+					}
+				}
+			}
+		}
+		[TestMethod]
+		public void HaloReachRebuildUnicTags()
+		{
+			CacheFileOutputInfoArgs.TestMethodSerial(TestContext,
+				CacheRebuildUnicTagsMethod,
+				BlamVersion.HaloReach_Xbox, kDirectoryXbox, @"Retail\maps\mainmenu.map");
+		}
 
 
 		class ScenarioScriptInterop : ScenarioScriptInteropGen3

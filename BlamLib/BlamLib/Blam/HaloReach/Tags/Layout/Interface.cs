@@ -56,9 +56,11 @@ namespace BlamLib.Blam.HaloReach.Tags
 			public text_value_pair_reference_block() : base(7)
 			{
 				Add(Flags = new TI.Flags(TI.FieldType.ByteFlags));
-				Add(TI.Pad._24);
+				// 0 = integer
+				// 1 = string id
+				Add(Type = new TI.Enum(TI.FieldType.ByteEnum));
+				Add(TI.Pad.Word);
 				Add(Integer = new TI.LongInteger());
-				Add(Real = new TI.Real());
 				Add(StringId = new TI.StringId());
 				Add(Name = new TI.StringId());
 				Add(Description = new TI.StringId());
@@ -66,13 +68,11 @@ namespace BlamLib.Blam.HaloReach.Tags
 		};
 		#endregion
 
-		public text_value_pair_definition_group() : base(6)
+		public text_value_pair_definition_group() : base(4)
 		{
 			Add(Parameter = new TI.Enum(TI.FieldType.LongEnum));
 			Add(Title = new TI.StringId());
 			Add(Description = new TI.StringId());
-			Add(Type = new TI.Enum(TI.FieldType.ByteEnum));
-			Add(TI.Pad._24);
 			Add(Values = new TI.Block<text_value_pair_reference_block>(this, 0));
 		}
 	};

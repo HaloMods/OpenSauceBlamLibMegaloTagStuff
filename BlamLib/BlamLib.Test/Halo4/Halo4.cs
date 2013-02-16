@@ -11,6 +11,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BlamLib.Test
 {
+	using GameTagGroups = Blam.Halo4.TagGroups;
+	using GameTags = Blam.Halo4.Tags;
+
 	[TestClass]
 	public partial class Halo4 : BaseTestClass
 	{
