@@ -6,6 +6,7 @@
 #pragma warning disable 1591 // "Missing XML comment for publicly visible type or member"
 using System;
 using System.IO;
+using System.Xml;
 using TI = BlamLib.TagInterface;
 
 namespace BlamLib.Blam.Halo4.Tags
@@ -24,7 +25,28 @@ namespace BlamLib.Blam.Halo4.Tags
 
 				s.WriteLine(StringId);
 				s.Write(k_ident);
-				unic.StringToStreamUtf8(LanguageOffsets[(int)LanguageType.English], s);
+				s.WriteLine(unic.GetStringUtf8(LanguageOffsets[(int)LanguageType.English]));
+			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				var unic = owner as multilingual_unicode_string_list_group;
+
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("key", StringId.ToString());
+				s.WriteAttributeString("value", unic.GetStringUtf8(LanguageOffsets[(int)LanguageType.English]));
+				s.WriteEndElement();
+
+#if false
+				s.WriteStartElement("localization");
+				for (LanguageType lang = LanguageType.English+1; lang < LanguageType.kMax; lang++)
+				{
+					s.WriteAttributeString("key", lang.ToString());
+					s.WriteAttributeString("value", unic.GetStringUtf8(LanguageOffsets[(int)lang]));
+				}
+				s.WriteEndElement();
+#endif
 			}
 		}
 		#endregion
@@ -45,10 +67,20 @@ namespace BlamLib.Blam.Halo4.Tags
 					Component, Property,
 					Unknown8.Value.ToString("X8"));
 			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("component", Component.ToString());
+				s.WriteAttributeString("prop", Property.ToString());
+				if (Unknown8.Value > 0) s.WriteAttributeString("unk8", Unknown8.Value.ToString());
+				s.WriteEndElement();
+			}
 		}
 		#endregion
 
-		void StringToStreamUtf8(int offset, StreamWriter s)
+		string GetStringUtf8(int offset)
 		{
 			byte[] data = StringData.Value;
 			int x;
@@ -57,8 +89,7 @@ namespace BlamLib.Blam.Halo4.Tags
 				byte b0 = data[x];
 				if (b0 == 0) break;
 			}
-			string str = System.Text.Encoding.UTF8.GetString(data, offset, x - offset);
-			s.WriteLine(str);
+			return System.Text.Encoding.UTF8.GetString(data, offset, x - offset);
 		}
 		void StringToStreamUnicode(int offset, StreamWriter s)
 		{
@@ -122,6 +153,28 @@ namespace BlamLib.Blam.Halo4.Tags
 				BlockC[x].ToStream(s, tag, this);
 			}
 			s.WriteLine();
+		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("unic");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("references");
+				foreach (var sr in StringRefs)
+					sr.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				if (false && BlockC.Count > 0)
+				{
+					s.WriteStartElement("unkC");
+					foreach (var sr in BlockC)
+						sr.ToStream(s, tag, this);
+					s.WriteEndElement();
+				}
+			}
+			s.WriteEndElement();
 		}
 	};
 	#endregion

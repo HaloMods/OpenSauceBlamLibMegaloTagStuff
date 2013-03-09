@@ -6,6 +6,7 @@
 #pragma warning disable 1591 // "Missing XML comment for publicly visible type or member"
 using System;
 using System.IO;
+using System.Xml;
 using TI = BlamLib.TagInterface;
 
 namespace BlamLib.Blam.HaloReach.Tags
@@ -15,9 +16,14 @@ namespace BlamLib.Blam.HaloReach.Tags
 		void ToStream(StreamWriter s,
 				Managers.TagManager tag, TI.Definition owner);
 	};
+	public interface ITempToXmlStreamInterface
+	{
+		void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner);
+	};
 
 	#region game_medal_globals
-	partial class game_medal_globals_group : ITempToStreamInterface
+	partial class game_medal_globals_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		#region game_medal_globals_medals_block
 		partial class game_medal_globals_medals_block
@@ -49,11 +55,29 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			s.WriteLine();
 		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("gmeg");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("medals");
+				foreach (var element in Medals)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Name.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
 	};
 	#endregion
 
 	#region incident_globals_definition
-	partial class incident_globals_definition_group : ITempToStreamInterface
+	partial class incident_globals_definition_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		#region incident_globals_definition_0_block
 		partial class incident_globals_definition_0_block
@@ -90,11 +114,30 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			s.WriteLine();
 		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("ingd");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("incidents");
+				foreach (var element in Block0)
+				{
+					s.WriteStartElement("entry");
+					if(!element.Name.Handle.IsNull)
+						s.WriteAttributeString("name", element.Name.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
 	};
 	#endregion
 
 	#region megalogamengine_sounds
-	partial class megalogamengine_sounds_group : ITempToStreamInterface
+	partial class megalogamengine_sounds_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		public void ToStream(StreamWriter s,
 				Managers.TagManager tag, TI.Definition owner)
@@ -115,11 +158,30 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			s.WriteLine();
 		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("mgls");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("sounds");
+				foreach (var element in Sounds)
+				{
+					s.WriteStartElement("entry");
+					if (!element.Datum.IsNull)
+						s.WriteAttributeString("tagName", element.GetTagPath());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
 	};
 	#endregion
 
 	#region megalo_string_id_table
-	partial class megalo_string_id_table_group : ITempToStreamInterface
+	partial class megalo_string_id_table_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		public void ToStream(StreamWriter s,
 				Managers.TagManager tag, TI.Definition owner)
@@ -136,11 +198,29 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			s.WriteLine();
 		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("msit");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("names");
+				foreach (var element in Names)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Value.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
 	};
 	#endregion
 
 	#region multiplayer_object_type_list
-	partial class multiplayer_object_type_list_group : ITempToStreamInterface
+	partial class multiplayer_object_type_list_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		#region multiplayer_object_type_block
 		partial class multiplayer_object_type_block
@@ -166,6 +246,20 @@ namespace BlamLib.Blam.HaloReach.Tags
 				DefinitionToStream(s);
 				s.WriteLine();
 			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("name", Name.ToString());
+				if (Definition.GroupTag != TI.TagGroup.Null)
+				{
+					s.WriteAttributeString("groupTag", Definition.GroupTag.TagToString());
+					if(!Definition.Datum.IsNull)
+						s.WriteAttributeString("tagName", Definition.GetTagPath());
+				}
+				s.WriteEndElement();
+			}
 		};
 		#endregion
 
@@ -187,6 +281,21 @@ namespace BlamLib.Blam.HaloReach.Tags
 						types[type_index].DefinitionToStream(s);
 				}
 				s.WriteLine();
+			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				int type_index = TypeIndex.Value;
+				if (type_index >= 0)
+				{
+					var types = (owner as multiplayer_object_type_list_group).TypeList;
+
+					s.WriteAttributeString("typeIndex", type_index.ToString());
+					s.WriteAttributeString("typeName", types[type_index].Name.ToString());
+				}
+				s.WriteEndElement();
 			}
 		};
 		#endregion
@@ -219,6 +328,14 @@ namespace BlamLib.Blam.HaloReach.Tags
 					s.Write("\t");
 					Entries[x].ToStream(s, tag, this);
 				}
+			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("name", Name.ToString());
+				s.WriteEndElement();
 			}
 		};
 		#endregion
@@ -301,6 +418,50 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			s.WriteLine();
 			#endregion
+		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("motl");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("types");
+				foreach (var element in TypeList)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("weapons");
+				foreach (var element in WeaponsList)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("vehicles");
+				foreach (var element in VehiclesList)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("grenades");
+				foreach (var element in GrenadesList)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("equipment");
+				foreach (var element in EquipmentList)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("weaponSets");
+				foreach (var element in WeaponSets)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("vehicleSets");
+				foreach (var element in VehicleSets)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
 		}
 	};
 	#endregion

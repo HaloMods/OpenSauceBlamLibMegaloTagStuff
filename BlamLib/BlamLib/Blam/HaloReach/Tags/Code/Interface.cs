@@ -6,12 +6,13 @@
 #pragma warning disable 1591 // "Missing XML comment for publicly visible type or member"
 using System;
 using System.IO;
+using System.Xml;
 using TI = BlamLib.TagInterface;
 
 namespace BlamLib.Blam.HaloReach.Tags
 {
 	#region multiplayer_variant_settings_interface_definition
-	partial class multiplayer_variant_settings_interface_definition_group : ITempToStreamInterface
+	partial class multiplayer_variant_settings_interface_definition_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		#region multiplayer_variant_settings_interface_definition_0_block
 		partial class multiplayer_variant_settings_interface_definition_0_block
@@ -60,6 +61,28 @@ namespace BlamLib.Blam.HaloReach.Tags
 						s.WriteLine();
 					}
 				}
+
+				public void ToStream(XmlWriter s,
+					Managers.TagManager tag, TI.Definition owner)
+				{
+					s.WriteStartElement("entry");
+
+					if (!Title.Handle.IsNull)
+						s.WriteAttributeString("titleId", Title.ToString());
+					if (!Description.Handle.IsNull)
+						s.WriteAttributeString("descId", Description.ToString());
+					if (Unknown20 != 0)
+						s.WriteAttributeString("settingCategory", Unknown20.ToString());
+
+					if (!Settings.Datum.IsNull)
+						s.WriteElementString("settings", Settings.GetTagPath());
+					if (!Template.Datum.IsNull)
+						s.WriteElementString("template", Template.GetTagPath());
+					if (!ValuePairs.Datum.IsNull)
+						s.WriteElementString("values", ValuePairs.GetTagPath());
+
+					s.WriteEndElement();
+				}
 			};
 			#endregion
 
@@ -78,6 +101,21 @@ namespace BlamLib.Blam.HaloReach.Tags
 					Options[x].ToStream(s, tag, this);
 				}
 				s.WriteLine();
+			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("settingCategory", SettingCategory.Value.ToString());
+				s.WriteAttributeString("name", Name.ToString());
+
+				s.WriteStartElement("options");
+				foreach (var opt in Options)
+					opt.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteEndElement();
 			}
 		};
 		#endregion
@@ -100,11 +138,25 @@ namespace BlamLib.Blam.HaloReach.Tags
 			}
 			s.WriteLine();
 		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("goof");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("categories");
+				foreach (var cat in Categories)
+					cat.ToStream(s, tag, this);
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
 	};
 	#endregion
 
 	#region text_value_pair_definition_group
-	partial class text_value_pair_definition_group : ITempToStreamInterface
+	partial class text_value_pair_definition_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
 		#region text_value_pair_reference_block
 		partial class text_value_pair_reference_block
@@ -118,6 +170,25 @@ namespace BlamLib.Blam.HaloReach.Tags
 				s.WriteLine(k_ident+
 					"Type={0}\t" + "Integer={1}\t" + "StringId={2}\t" + "Flags={3}\t",
 					Type, Integer.Value.ToString("X8"), StringId, Flags);
+			}
+
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+
+				//s.WriteAttributeString("type", Type.ToString());
+				s.WriteAttributeString("labelId", Name.ToString());
+				if (!Description.Handle.IsNull) s.WriteAttributeString("descId", Description.ToString());
+				switch (Type.Value)
+				{
+					case 0: s.WriteAttributeString("int", Integer.Value.ToString()); break;
+					case 1: s.WriteAttributeString("stringId", StringId.ToString()); break;
+				}
+				if(Flags.Value != 0)
+					s.WriteAttributeString("flags", Flags.ToString());
+
+				s.WriteEndElement();
 			}
 		};
 		#endregion
@@ -137,6 +208,24 @@ namespace BlamLib.Blam.HaloReach.Tags
 				Values[x].ToStream(s, tag, this);
 			}
 			s.WriteLine();
+		}
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("sily");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteAttributeString("titleId", Title.ToString());
+				if(!Description.Handle.IsNull) s.WriteAttributeString("descId", Description.ToString());
+
+				s.WriteStartElement("values");
+				s.WriteAttributeString("type", Values[0].Type.ToString());
+				foreach (var vp in Values)
+					vp.ToStream(s, tag, this);
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
 		}
 	};
 	#endregion

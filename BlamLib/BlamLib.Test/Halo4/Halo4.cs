@@ -124,15 +124,15 @@ namespace BlamLib.Test
 		#endregion
 
 		static readonly string[] kMapNames_MegaloData = {
-			//@"Retail\maps\ca_blood_cavern.map",
+			@"Retail\maps\ca_blood_cavern.map",
 
-			//@"Retail\maps\ca_forge_bonanza.map",
+			@"Retail\maps\ca_forge_bonanza.map",
 			//@"Retail\maps\ca_forge_erosion.map",
 			//@"Retail\maps\ca_forge_ravine.map",
 
 			//@"Retail\maps\ff92_valhalla.map",
 
-			//@"Retail\dlc_crimson\zd_02_grind.map",
+			@"Retail\dlc_crimson\zd_02_grind.map",
 
 			@"Retail\maps\mainmenu.map", // only use for sily
 		};
@@ -161,8 +161,13 @@ namespace BlamLib.Test
 				if (MapNeedsUniqueName(header_name))
 					header_name = cache.GetUniqueName();
 
+				var xml_settings = new System.Xml.XmlWriterSettings();
+				xml_settings.Indent = true;
+				xml_settings.IndentChars = "\t";
+
 				string results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "megalo", "txt");
-				if(false)using (var s = new System.IO.StreamWriter(results_path))
+				#region StreamWriter
+				if (false)using (var s = new System.IO.StreamWriter(results_path))
 				{
 					foreach (var tag in cache.IndexHalo4.Tags)
 					{
@@ -182,9 +187,37 @@ namespace BlamLib.Test
 						cache.TagIndexManager.Unload(index);
 					}
 				}
+				#endregion
+				#region XmlWriter
+				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "megalo", "xml");
+				using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+				{
+					s.WriteStartDocument(true);
+					s.WriteStartElement("megaloDefinitions");
+					s.WriteAttributeString("game", "Halo4_Xbox");
 
+					foreach (var tag in cache.IndexHalo4.Tags)
+					{
+						if (!kMegaloGroupTags.Contains(tag.GroupTag)) continue;
+
+						var index = cache.TagIndexManager.Open(tag.Datum);
+						var man = cache.TagIndexManager[index];
+						var def = man.TagDefinition;
+						var to_stream = def as GameTags.ITempToXmlStreamInterface;
+
+						to_stream.ToStream(s, man, null);
+
+						cache.TagIndexManager.Unload(index);
+					}
+
+					s.WriteEndElement();
+					s.WriteEndDocument();
+				}
+				#endregion
+
+				#region StreamWriter Interface
 				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "interface", "txt");
-				if(true)using (var s = new System.IO.StreamWriter(results_path))
+				if(false)using (var s = new System.IO.StreamWriter(results_path))
 				{
 					foreach (var tag in cache.IndexHalo4.Tags)
 					{
@@ -213,6 +246,33 @@ namespace BlamLib.Test
 						cache.TagIndexManager.Unload(index);
 					}
 				}
+				#endregion
+				#region XmlWriter Interface
+				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "interface", "xml");
+				using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+				{
+					s.WriteStartDocument(true);
+					s.WriteStartElement("interfaceDefinitions");
+					s.WriteAttributeString("game", "Halo4_Xbox");
+
+					foreach (var tag in cache.IndexHalo4.Tags)
+					{
+						if (!kInterfaceGroupTags.Contains(tag.GroupTag)) continue;
+
+						var index = cache.TagIndexManager.Open(tag.Datum);
+						var man = cache.TagIndexManager[index];
+						var def = man.TagDefinition;
+						var to_stream = def as GameTags.ITempToXmlStreamInterface;
+
+						to_stream.ToStream(s, man, null);
+
+						cache.TagIndexManager.Unload(index);
+					}
+
+					s.WriteEndElement();
+					s.WriteEndDocument();
+				}
+				#endregion
 			}
 
 			args.SignalFinished();
@@ -255,8 +315,13 @@ namespace BlamLib.Test
 				lang_pack_english.ReadFromCache(cache);
 				lang_pack_english.ToString();
 
+				var xml_settings = new System.Xml.XmlWriterSettings();
+				xml_settings.Indent = true;
+				xml_settings.IndentChars = "\t";
+
 				string results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "unic", "txt");
-				using (var s = new System.IO.StreamWriter(results_path, false, System.Text.Encoding.UTF8))
+				#region StreamWriter
+				if(false)using (var s = new System.IO.StreamWriter(results_path, false, System.Text.Encoding.UTF8))
 				{
 					foreach (var tag in cache.IndexHalo4.Tags)
 					{
@@ -277,6 +342,37 @@ namespace BlamLib.Test
 						cache.TagIndexManager.Unload(index);
 					}
 				}
+				#endregion
+				#region XmlWriter
+				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "unic", "xml");
+				xml_settings.Encoding = System.Text.Encoding.UTF8;
+				xml_settings.CheckCharacters = false;
+				using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+				{
+					s.WriteStartDocument(true);
+					s.WriteStartElement("localizationDefinitions");
+					s.WriteAttributeString("game", "Halo4_Xbox");
+
+					foreach (var tag in cache.IndexHalo4.Tags)
+					{
+						if (tag.GroupTag != Blam.Halo4.TagGroups.unic) continue;
+
+						var index = cache.TagIndexManager.Open(tag.Datum);
+						var man = cache.TagIndexManager[index];
+						var def = man.TagDefinition;
+						var unic = def as Blam.Halo4.Tags.multilingual_unicode_string_list_group;
+
+						unic.ReconstructHack(cache, lang_pack_english);
+						unic.ToStream(s, man, null);
+
+						cache.TagIndexManager.Unload(index);
+					}
+
+					s.WriteEndElement();
+					s.WriteEndDocument();
+				}
+				xml_settings.CheckCharacters = true;
+				#endregion
 			}
 		}
 		[TestMethod]
