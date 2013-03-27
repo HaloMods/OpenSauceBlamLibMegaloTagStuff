@@ -93,6 +93,58 @@ namespace BlamLib.Blam.HaloReach.Tags
 	};
 	#endregion
 
+	#region loadout_globals_definition
+	partial class loadout_globals_definition_group
+	{
+		#region loadout_block
+		partial class loadout_block
+		{
+			public loadout_block() : base(6)
+			{
+				Add(Name = new TI.StringId());
+
+				Add(PrimaryWeapon = new TI.StringId());
+
+				Add(SecondaryWeapon = new TI.StringId());
+
+				Add(Equipment = new TI.StringId());
+				Add(Unk10 = new TI.Flags(TI.FieldType.ByteFlags));
+				Add(TI.Pad._24);
+			}
+		};
+		#endregion
+
+		#region loadout_set_block
+		partial class loadout_set_block
+		{
+			#region entry_block
+			partial class entry_block
+			{
+				public entry_block() : base(2)
+				{
+					Add(LoadoutIndex = new TI.BlockIndex());
+					Add(TI.Pad.Word);
+				}
+			};
+			#endregion
+
+			public loadout_set_block() : base(2)
+			{
+				Add(Name = new TI.StringId());
+				Add(Loadouts = new TI.Block<entry_block>(this, 0));
+			}
+		};
+		#endregion
+
+		public loadout_globals_definition_group() : base(3)
+		{
+			Add(Loadouts = new TI.Block<loadout_block>(this, 0));
+			Add(LoadoutSets = new TI.Block<loadout_set_block>(this, 0));
+			Add(LoadoutNames = new TI.Block<field_block<TI.StringId>>(this, 0));
+		}
+	};
+	#endregion
+
 	#region megalogamengine_sounds
 	[TI.TagGroup((int)TagGroups.Enumerated.mgls, -1, 1520)]
 	public partial class megalogamengine_sounds_group : TI.Definition

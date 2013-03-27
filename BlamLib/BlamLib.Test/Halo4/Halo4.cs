@@ -137,16 +137,19 @@ namespace BlamLib.Test
 			@"Retail\maps\mainmenu.map", // only use for sily
 		};
 		static readonly List<TagInterface.TagGroup> kMegaloGroupTags = new List<TagInterface.TagGroup> {
-			Blam.Halo4.TagGroups.gmeg,
-			Blam.Halo4.TagGroups.ingd,
-			Blam.Halo4.TagGroups.mgee,
-			Blam.Halo4.TagGroups.mgls,
-			Blam.Halo4.TagGroups.msit,
-			Blam.Halo4.TagGroups.motl,
+			GameTagGroups.capg,
+			GameTagGroups.ggol,
+			GameTagGroups.gmeg,
+			GameTagGroups.ingd,
+			GameTagGroups.lgtd,
+			GameTagGroups.mgee,
+			GameTagGroups.mgls,
+			GameTagGroups.msit,
+			GameTagGroups.motl,
 		};
 		static readonly List<TagInterface.TagGroup> kInterfaceGroupTags = new List<TagInterface.TagGroup> {
-			Blam.Halo4.TagGroups.goof,
-			Blam.Halo4.TagGroups.sily,
+			GameTagGroups.goof,
+			GameTagGroups.sily,
 		};
 		static void CacheOutputMegaloInformationMethod(object param)
 		{
@@ -249,7 +252,7 @@ namespace BlamLib.Test
 				#endregion
 				#region XmlWriter Interface
 				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "interface", "xml");
-				using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+				if(false)using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
 				{
 					s.WriteStartDocument(true);
 					s.WriteStartElement("interfaceDefinitions");
@@ -301,7 +304,7 @@ namespace BlamLib.Test
 				Blam.Cache.CacheItemGen3 game_globals = null;
 				foreach (var tag in cache.IndexHalo4.Tags)
 				{
-					if (tag.GroupTag == Blam.Halo4.TagGroups.matg)
+					if (tag.GroupTag == GameTagGroups.matg)
 					{
 						game_globals = tag as Blam.Cache.CacheItemGen3;
 						break;
@@ -325,7 +328,7 @@ namespace BlamLib.Test
 				{
 					foreach (var tag in cache.IndexHalo4.Tags)
 					{
-						if (tag.GroupTag != Blam.Halo4.TagGroups.unic) continue;
+						if (tag.GroupTag != GameTagGroups.unic) continue;
 
 						var index = cache.TagIndexManager.Open(tag.Datum);
 						var man = cache.TagIndexManager[index];
@@ -355,7 +358,7 @@ namespace BlamLib.Test
 
 					foreach (var tag in cache.IndexHalo4.Tags)
 					{
-						if (tag.GroupTag != Blam.Halo4.TagGroups.unic) continue;
+						if (tag.GroupTag != GameTagGroups.unic) continue;
 
 						var index = cache.TagIndexManager.Open(tag.Datum);
 						var man = cache.TagIndexManager[index];

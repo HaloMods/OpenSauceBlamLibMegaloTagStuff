@@ -14,6 +14,59 @@ namespace BlamLib.Blam.Halo4.Tags
 	public sealed class field_block<FieldType> : TI.field_block<FieldType> where FieldType : TI.Field, new() { };
 
 
+	#region custom_app_globals
+	[TI.TagGroup((int)TagGroups.Enumerated.capg, -1, 20)]
+	public partial class custom_app_globals_group : TI.Definition
+	{
+		#region custom_app_block
+		[TI.Definition(-1, 60)]
+		public partial class custom_app_block : TI.Definition
+		{
+			public TI.StringId Name, Icon;
+		};
+		#endregion
+
+		public TI.Block<custom_app_block> Apps;
+	};
+	#endregion
+
+	#region game_globals_ordnance_list
+	[TI.TagGroup((int)TagGroups.Enumerated.ggol, -1, 52)]
+	public partial class game_globals_ordnance_list_group : TI.Definition
+	{
+		#region ordnance_block
+		[TI.Definition(-1, 76)]
+		public partial class ordnance_block : TI.Definition
+		{
+			public TI.StringId Name;
+			public TI.String LookupName;
+			public TI.StringId ObjectType;
+		};
+		#endregion
+
+		#region ordnance_set_block
+		[TI.Definition(-1, 48)]
+		public partial class ordnance_set_block : TI.Definition
+		{
+			#region remapping_block
+			[TI.Definition(-1, 8)]
+			public partial class remapping_block : TI.Definition
+			{
+				public TI.StringId OldType, NewType;
+			};
+			#endregion
+
+			public TI.StringId Name;
+			public TI.String LookupName;
+			public TI.Block<remapping_block> Remappings;
+		};
+		#endregion
+
+		public TI.Block<ordnance_block> OrdnanceList;
+		public TI.Block<ordnance_set_block> OrdnanceSets;
+	};
+	#endregion
+
 	#region game_engine_globals
 	[TI.TagGroup((int)TagGroups.Enumerated.gegl, -1, 44)]
 	public partial class game_engine_globals_group : TI.Definition
@@ -171,6 +224,43 @@ namespace BlamLib.Blam.Halo4.Tags
 
 		public TI.Block<incident_globals_definition_0_block> Block0;
 		public TI.TagReference UnknownC, Unknown1C;
+	};
+	#endregion
+
+	#region loadout_globals_definition
+	[TI.TagGroup((int)TagGroups.Enumerated.lgtd, -1, 48)]
+	public partial class loadout_globals_definition_group : TI.Definition
+	{
+		#region loadout_block
+		[TI.Definition(-1, 36)]
+		public partial class loadout_block : TI.Definition
+		{
+			public TI.StringId Name, AppSlot1, AppSlot2, PrimaryWeapon, SecondaryWeapon, Equipment;
+			public TI.Flags Unk20;
+		};
+		#endregion
+
+		#region loadout_set_block
+		[TI.Definition(-1, 16)]
+		public partial class loadout_set_block : TI.Definition
+		{
+			#region entry_block
+			[TI.Definition(-1, 4)]
+			public partial class entry_block : TI.Definition
+			{
+				public TI.BlockIndex LoadoutIndex;
+			};
+			#endregion
+
+			public TI.StringId Name;
+			public TI.Block<entry_block> Loadouts;
+		};
+		#endregion
+
+		public TI.Block<loadout_block> Loadouts;
+		public TI.Block<loadout_set_block> LoadoutSets;
+		public TI.Block<field_block<TI.StringId>> LoadoutNames;
+		public TI.Block<loadout_block> LoadoutDefaults;
 	};
 	#endregion
 

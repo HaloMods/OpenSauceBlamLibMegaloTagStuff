@@ -9,6 +9,101 @@ using TI = BlamLib.TagInterface;
 
 namespace BlamLib.Blam.Halo4.Tags
 {
+	#region custom_app_globals
+	partial class custom_app_globals_group
+	{
+		#region custom_app_block
+		partial class custom_app_block
+		{
+			public custom_app_block() : base(7)
+			{
+				Add(Name = new TI.StringId());
+				Add(new TI.Pad(8)); // unused; description, help text?
+				Add(Icon = new TI.StringId());
+				Add(new TI.TagReference(this));
+				Add(TI.Pad.DWord); // '0'
+				Add(TI.Pad.BlockHalo3); // 0x3C
+					// tag block
+					// tag block
+					// tag block
+					// tag block
+					// tag block
+				Add(TI.Pad.BlockHalo3); // 0x1C?
+					// byte[0x8]
+					// string id?
+					// tag reference
+			}
+		};
+		#endregion
+
+		public custom_app_globals_group() : base(4)
+		{
+			Add(TI.Pad.DWord); // '1'
+			Add(TI.Pad.Word); // '1'
+			Add(TI.Pad.Word); // '0'
+			Add(Apps = new TI.Block<custom_app_block>(this, 0));
+		}
+	};
+	#endregion
+
+	#region game_globals_ordnance_list
+	partial class game_globals_ordnance_list_group
+	{
+		#region ordnance_block
+		partial class ordnance_block
+		{
+			public ordnance_block() : base(10)
+			{
+				Add(Name = new TI.StringId());
+				Add(LookupName = new TI.String());
+				Add(new TI.LongInteger());
+				Add(ObjectType = new TI.StringId());
+				Add(new TI.TagReference(this));
+				Add(new TI.ByteInteger());
+				Add(new TI.ByteInteger()); // amount?
+				Add(new TI.Flags(TI.FieldType.ByteFlags));
+				Add(TI.Pad.Byte);
+				Add(new TI.Pad(12));
+			}
+		};
+		#endregion
+
+		#region ordnance_set_block
+		partial class ordnance_set_block
+		{
+			#region remapping_block
+			partial class remapping_block
+			{
+				public remapping_block() : base(2)
+				{
+					Add(OldType = new TI.StringId());
+					Add(NewType = new TI.StringId());
+				}
+			};
+			#endregion
+
+			public ordnance_set_block() : base(3)
+			{
+				Add(Name = new TI.StringId());
+				Add(LookupName = new TI.String());
+				Add(Remappings = new TI.Block<remapping_block>(this, 0));
+			}
+		};
+		#endregion
+
+		public game_globals_ordnance_list_group() : base(7)
+		{
+			Add(new TI.Real());
+			Add(new TI.Real());
+			Add(new TI.TagReference(this, TagGroups.effe));
+			Add(OrdnanceList = new TI.Block<ordnance_block>(this, 0));
+			Add(OrdnanceSets = new TI.Block<ordnance_set_block>(this, 0));
+			Add(new TI.Flags(TI.FieldType.ByteFlags));
+			Add(TI.Pad._24);
+		}
+	};
+	#endregion
+
 	#region game_engine_globals
 	partial class game_engine_globals_group
 	{
@@ -290,6 +385,63 @@ namespace BlamLib.Blam.Halo4.Tags
 			Add(Block0 = new TI.Block<incident_globals_definition_0_block>(this, 0));
 			Add(UnknownC = new TI.TagReference(this, TagGroups.unic));
 			Add(Unknown1C = new TI.TagReference(this, TagGroups.unic));
+		}
+	};
+	#endregion
+
+	#region loadout_globals_definition
+	partial class loadout_globals_definition_group
+	{
+		#region loadout_block
+		partial class loadout_block
+		{
+			public loadout_block() : base(10)
+			{
+				Add(Name = new TI.StringId());
+				Add(AppSlot1 = new TI.StringId());
+				Add(AppSlot2 = new TI.StringId());
+
+				Add(PrimaryWeapon = new TI.StringId());
+				Add(TI.Pad.DWord);
+
+				Add(SecondaryWeapon = new TI.StringId());
+				Add(TI.Pad.DWord);
+
+				Add(Equipment = new TI.StringId());
+				Add(Unk20 = new TI.Flags(TI.FieldType.ByteFlags));
+				Add(TI.Pad._24);
+			}
+		};
+		#endregion
+
+		#region loadout_set_block
+		partial class loadout_set_block
+		{
+			#region entry_block
+			partial class entry_block
+			{
+				public entry_block() : base(2)
+				{
+					Add(LoadoutIndex = new TI.BlockIndex());
+					Add(TI.Pad.Word);
+				}
+			};
+			#endregion
+
+			public loadout_set_block() : base(2)
+			{
+				Add(Name = new TI.StringId());
+				Add(Loadouts = new TI.Block<entry_block>(this, 0));
+			}
+		};
+		#endregion
+
+		public loadout_globals_definition_group() : base(4)
+		{
+			Add(Loadouts = new TI.Block<loadout_block>(this, 0));
+			Add(LoadoutSets = new TI.Block<loadout_set_block>(this, 0));
+			Add(LoadoutNames = new TI.Block<field_block<TI.StringId>>(this, 0));
+			Add(LoadoutDefaults = new TI.Block<loadout_block>(this, 0));
 		}
 	};
 	#endregion
