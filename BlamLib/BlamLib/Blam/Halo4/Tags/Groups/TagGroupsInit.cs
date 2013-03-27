@@ -44,6 +44,7 @@ namespace BlamLib.Blam.Halo4
 // 			bitm.Definition = new Tags.bitmap_group().State;
 // 			bloc.Definition = new Tags.crate_group().State;
 // 			bsdt.Definition = new Tags.breakable_surface_group().State;
+			capg.Definition = new Tags.custom_app_globals_group().State;
 // 			cddf.Definition = new Tags.collision_damage_group().State;
 // 			cfxs.Definition = new Tags.camera_fx_settings_group().State;
 // 			chad.Definition = new Tags.chud_animation_definition_group().State;
@@ -92,6 +93,8 @@ namespace BlamLib.Blam.Halo4
 			//fxtt.Definition = new Tags.fx_test_group().State;
 			//gcrg.Definition = new Tags.game_completion_rewards_globals_group().State;
 			gegl.Definition = new Tags.game_engine_globals_group().State;
+
+			ggol.Definition = new Tags.game_globals_ordnance_list_group().State;
 // 			gint.Definition = new Tags.giant_group().State;
 			//gldf.Definition = new Tags.cheap_light_group().State;
 // 			glps.Definition = new Tags.global_pixel_shader_group().State;
@@ -114,7 +117,7 @@ namespace BlamLib.Blam.Halo4
 // 			jpt_.Definition = new Tags.damage_effect_group().State;
 			//ldsc.Definition = new Tags.load_screen_group().State;
 // 			lens.Definition = new Tags.lens_flare_group().State;
-			//lgtd.Definition = new Tags.loadout_globals_definition_group().State;
+			lgtd.Definition = new Tags.loadout_globals_definition_group().State;
 // 			ligh.Definition = new Tags.light_group().State;
 			//locs.Definition = new Tags.location_name_globals_definition_group().State;
 // 			lsnd.Definition = new Tags.sound_looping_group().State;

@@ -136,6 +136,88 @@ namespace BlamLib.Blam.HaloReach.Tags
 	};
 	#endregion
 
+	#region loadout_globals_definition
+	partial class loadout_globals_definition_group : ITempToXmlStreamInterface
+	{
+		#region loadout_block
+		partial class loadout_block
+		{
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("name", Name.ToString());
+
+				if (!PrimaryWeapon.Handle.IsNull)
+					s.WriteAttributeString("primary", PrimaryWeapon.ToString());
+				if (!SecondaryWeapon.Handle.IsNull)
+					s.WriteAttributeString("secondary", SecondaryWeapon.ToString());
+				if (!Equipment.Handle.IsNull)
+					s.WriteAttributeString("equipment", Equipment.ToString());
+
+				s.WriteEndElement();
+			}
+		}
+		#endregion
+
+		#region loadout_set_block
+		partial class loadout_set_block
+		{
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				var types = (owner as loadout_globals_definition_group).Loadouts;
+
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("name", Name.ToString());
+
+				s.WriteStartElement("loadouts");
+				foreach (var element in Loadouts)
+				{
+					int index = element.LoadoutIndex.Value;
+					string name = index >= 0 ? types[index].Name.ToString() : "NONE";
+
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("typeName", name);
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+				s.WriteEndElement();
+			}
+		}
+		#endregion
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("lgtd");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("types");
+				foreach (var element in Loadouts)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("sets");
+				foreach (var element in LoadoutSets)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("names");
+				foreach (var element in LoadoutNames)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Value.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
+	};
+	#endregion
+
 	#region megalogamengine_sounds
 	partial class megalogamengine_sounds_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{

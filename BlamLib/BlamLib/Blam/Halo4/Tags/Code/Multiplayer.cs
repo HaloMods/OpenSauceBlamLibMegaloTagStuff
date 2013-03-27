@@ -22,6 +22,65 @@ namespace BlamLib.Blam.Halo4.Tags
 				Managers.TagManager tag, TI.Definition owner);
 	};
 
+	#region custom_app_globals
+	partial class custom_app_globals_group : ITempToXmlStreamInterface
+	{
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("capg");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("apps");
+				foreach (var element in Apps)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Name.ToString());
+					s.WriteAttributeString("icon", element.Icon.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
+	};
+	#endregion
+
+	#region game_globals_ordnance_list
+	partial class game_globals_ordnance_list_group : ITempToXmlStreamInterface
+	{
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("ggol");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("types");
+				foreach (var element in OrdnanceList)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Name.ToString());
+					s.WriteAttributeString("lookupName", element.LookupName.ToString());
+					s.WriteAttributeString("typeName", element.ObjectType.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+				s.WriteStartElement("sets");
+				foreach (var element in OrdnanceSets)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Name.ToString());
+					s.WriteAttributeString("lookupName", element.LookupName.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
+	};
+	#endregion
+
 	#region game_medal_globals
 	partial class game_medal_globals_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
@@ -149,6 +208,97 @@ namespace BlamLib.Blam.Halo4.Tags
 						s.WriteAttributeString("name", element.Name.ToString());
 					s.WriteEndElement();
 				}
+				s.WriteEndElement();
+			}
+			s.WriteEndElement();
+		}
+	};
+	#endregion
+
+	#region loadout_globals_definition
+	partial class loadout_globals_definition_group : ITempToXmlStreamInterface
+	{
+		#region loadout_block
+		partial class loadout_block
+		{
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("name", Name.ToString());
+
+				if (!AppSlot1.Handle.IsNull)
+					s.WriteAttributeString("appSlot1", AppSlot1.ToString());
+				if (!AppSlot2.Handle.IsNull)
+					s.WriteAttributeString("appSlot2", AppSlot2.ToString());
+				if (!PrimaryWeapon.Handle.IsNull)
+					s.WriteAttributeString("primary", PrimaryWeapon.ToString());
+				if (!SecondaryWeapon.Handle.IsNull)
+					s.WriteAttributeString("secondary", SecondaryWeapon.ToString());
+				if (!Equipment.Handle.IsNull)
+					s.WriteAttributeString("equipment", Equipment.ToString());
+
+				s.WriteEndElement();
+			}
+		}
+		#endregion
+
+		#region loadout_set_block
+		partial class loadout_set_block
+		{
+			public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+			{
+				var types = (owner as loadout_globals_definition_group).Loadouts;
+
+				s.WriteStartElement("entry");
+				s.WriteAttributeString("name", Name.ToString());
+
+				s.WriteStartElement("loadouts");
+				foreach (var element in Loadouts)
+				{
+					int index = element.LoadoutIndex.Value;
+					string name = index >= 0 ? types[index].Name.ToString() : "NONE";
+
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("typeName", name);
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+				s.WriteEndElement();
+			}
+		}
+		#endregion
+
+		public void ToStream(XmlWriter s,
+				Managers.TagManager tag, TI.Definition owner)
+		{
+			s.WriteStartElement("lgtd");
+			s.WriteAttributeString("name", tag.Name);
+			{
+				s.WriteStartElement("types");
+				foreach (var element in Loadouts)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("sets");
+				foreach (var element in LoadoutSets)
+					element.ToStream(s, tag, this);
+				s.WriteEndElement();
+
+				s.WriteStartElement("names");
+				foreach (var element in LoadoutNames)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("name", element.Value.ToString());
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+				s.WriteStartElement("defaults");
+				foreach (var element in LoadoutDefaults)
+					element.ToStream(s, tag, this);
 				s.WriteEndElement();
 			}
 			s.WriteEndElement();

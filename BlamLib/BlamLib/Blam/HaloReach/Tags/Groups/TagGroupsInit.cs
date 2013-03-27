@@ -132,7 +132,7 @@ namespace BlamLib.Blam.HaloReach
 // 			jpt_.Definition = new Tags.damage_effect_group().State;
 			//ldsc.Definition = new Tags.load_screen_group().State;
 // 			lens.Definition = new Tags.lens_flare_group().State;
-			//lgtd.Definition = new Tags.loadout_globals_definition_group().State;
+			lgtd.Definition = new Tags.loadout_globals_definition_group().State;
 // 			ligh.Definition = new Tags.light_group().State;
 			//locs.Definition = new Tags.location_name_globals_definition_group().State;
 // 			lsnd.Definition = new Tags.sound_looping_group().State;

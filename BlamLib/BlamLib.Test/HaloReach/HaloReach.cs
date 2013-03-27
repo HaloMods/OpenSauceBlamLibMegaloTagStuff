@@ -169,6 +169,7 @@ namespace BlamLib.Test
 		static readonly List<TagInterface.TagGroup> kMegaloGroupTags = new List<TagInterface.TagGroup> {
 			GameTagGroups.gmeg,
 			GameTagGroups.ingd,
+			GameTagGroups.lgtd,
 			GameTagGroups.mgls,
 			GameTagGroups.msit,
 			GameTagGroups.motl,

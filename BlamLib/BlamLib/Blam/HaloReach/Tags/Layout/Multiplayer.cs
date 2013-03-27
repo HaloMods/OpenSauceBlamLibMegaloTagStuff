@@ -188,6 +188,42 @@ namespace BlamLib.Blam.HaloReach.Tags
 	};
 	#endregion
 
+	#region loadout_globals_definition
+	[TI.TagGroup((int)TagGroups.Enumerated.lgtd, -1, 36)]
+	public partial class loadout_globals_definition_group : TI.Definition
+	{
+		#region loadout_block
+		[TI.Definition(-1, 20)]
+		public partial class loadout_block : TI.Definition
+		{
+			public TI.StringId Name, PrimaryWeapon, SecondaryWeapon, Equipment;
+			public TI.Flags Unk10;
+		};
+		#endregion
+
+		#region loadout_set_block
+		[TI.Definition(-1, 16)]
+		public partial class loadout_set_block : TI.Definition
+		{
+			#region entry_block
+			[TI.Definition(-1, 4)]
+			public partial class entry_block : TI.Definition
+			{
+				public TI.BlockIndex LoadoutIndex;
+			};
+			#endregion
+
+			public TI.StringId Name;
+			public TI.Block<entry_block> Loadouts;
+		};
+		#endregion
+
+		public TI.Block<loadout_block> Loadouts;
+		public TI.Block<loadout_set_block> LoadoutSets;
+		public TI.Block<field_block<TI.StringId>> LoadoutNames;
+	};
+	#endregion
+
 	#region megalogamengine_sounds
 	public partial class megalogamengine_sounds_group : TI.Definition
 	{
