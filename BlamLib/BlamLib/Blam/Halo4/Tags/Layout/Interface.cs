@@ -86,7 +86,9 @@ namespace BlamLib.Blam.Halo4.Tags
 			Add(/*shared globals = */ new TI.TagReference(this, TagGroups.wigl));
 			Add(/*variant settings ui = */ new TI.TagReference(this, TagGroups.goof));
 			Add(/*game hopper descriptions = */ new TI.TagReference(this, TagGroups.unic));
-			Add(TI.Pad.BlockHalo3);
+			Add(TI.Pad.BlockHalo3); // screen widgets
+				// string id
+				// cusc
 			// only saw these used in ui\main_menu
 			Add(TI.Pad.BlockHalo3);
 			Add(TI.Pad.BlockHalo3);

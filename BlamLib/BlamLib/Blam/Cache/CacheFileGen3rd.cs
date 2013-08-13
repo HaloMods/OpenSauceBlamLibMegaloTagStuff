@@ -431,7 +431,8 @@ namespace BlamLib.Blam.Cache
 			GroupIndex = (short)(datum.Index = s.ReadUInt16());
 			datum.Salt = (short)s.ReadUInt16();
 			address = s.ReadUInt32();
-			offset = (int)(address - s.BaseAddress);
+			if(address != 0)
+				offset = (int)(address - s.BaseAddress);
 			size = 0;
 		}
 
@@ -500,6 +501,17 @@ namespace BlamLib.Blam.Cache
 			return cacheFileResourceDefinitionFactory;
 		}
 
+		protected override void OutputExtraHeaderInfo(System.IO.StreamWriter s)
+		{
+			base.OutputExtraHeaderInfo(s);
+
+			var header = Header as CacheHeaderGen3;
+
+			s.WriteLine("--MemoryBuffer--");
+			s.WriteLine("{0}\tSize", header.MemoryBufferSize.ToString("X8"));
+			s.WriteLine("{0}\tOffset", header.MemoryBufferOffset.ToString("X8"));
+		}
+
 		protected override void OutputExtraTagIndexInfo(System.IO.StreamWriter s)
 		{
 			var index_gen3 = Index as CacheIndexGen3;
@@ -562,6 +574,7 @@ namespace BlamLib.Blam.Cache
 				}
 				x++;
 			}
+			s.WriteLine();
 		}
 	};
 

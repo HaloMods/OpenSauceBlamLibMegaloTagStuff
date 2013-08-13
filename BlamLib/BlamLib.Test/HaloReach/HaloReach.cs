@@ -397,9 +397,53 @@ namespace BlamLib.Test
 		[TestMethod]
 		public void HaloReachRebuildUnicTags()
 		{
+			BlamVersion game = BlamVersion.HaloReach_Xbox;
+
 			CacheFileOutputInfoArgs.TestMethodSerial(TestContext,
 				CacheRebuildUnicTagsMethod,
-				BlamVersion.HaloReach_Xbox, kDirectoryXbox, @"Retail\maps\mainmenu.map");
+				game, kDirectoryXbox, @"Retail\maps\mainmenu.map");
+			CacheFileOutputInfoArgs.TestMethodSerial(TestContext,
+				CacheRebuildUnicTagsMethod,
+				game, kDirectoryXbox, @"Retail\dlc_noble\dlc_invasion.map");
+
+			string results_path = BuildResultPath(kTagDumpPath, game, "", "settings", "xml");
+			var xml_settings = new System.Xml.XmlWriterSettings();
+			xml_settings.Indent = true;
+			xml_settings.IndentChars = "  ";
+			xml_settings.Encoding = System.Text.Encoding.ASCII;
+			using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+			{
+				s.WriteStartDocument(true);
+				s.WriteStartElement("settingsDefinitions");
+				s.WriteAttributeString("game", game.ToString());
+
+				s.WriteStartElement("options");
+				foreach (var kv in Blam.HaloReach.Tags.text_value_pair_definition_group.SettingParameters)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("key", kv.Key.ToString());
+					s.WriteAttributeString("value", Path.GetFileName(kv.Value));
+					s.WriteAttributeString("tagName", kv.Value);
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+				s.WriteStartElement("categories");
+				foreach (var kv in Blam.HaloReach.Tags.multiplayer_variant_settings_interface_definition_group.SettingCategories)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("key", kv.Key.ToString());
+					s.WriteAttributeString("value", Path.GetFileName(kv.Value.TagName));
+					s.WriteAttributeString("title", kv.Value.Title);
+					s.WriteAttributeString("tagName", kv.Value.TagName);
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+
+				s.WriteEndElement();
+				s.WriteEndDocument();
+			}
 		}
 
 

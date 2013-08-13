@@ -66,7 +66,7 @@ namespace BlamLib.Blam.Halo4.Tags
 	#endregion
 
 	#region user_interface_globals_definition
-	[TI.TagGroup((int)TagGroups.Enumerated.wgtz, -1, 308)]
+	[TI.TagGroup((int)TagGroups.Enumerated.wgtz, -1, 304)]
 	public partial class user_interface_globals_definition_group : TI.Definition
 	{
 	};

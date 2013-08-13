@@ -35,6 +35,9 @@ namespace BlamLib.Test
 
 		static bool MapNeedsUniqueName(string header_name)
 		{
+			if (header_name.Contains("_patch"))
+				return true;
+
 			return false;
 		}
 		static readonly string[] kMapNames_Retail = {
@@ -193,7 +196,7 @@ namespace BlamLib.Test
 				#endregion
 				#region XmlWriter
 				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "megalo", "xml");
-				using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+				if(false)using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
 				{
 					s.WriteStartDocument(true);
 					s.WriteStartElement("megaloDefinitions");
@@ -252,7 +255,7 @@ namespace BlamLib.Test
 				#endregion
 				#region XmlWriter Interface
 				results_path = BuildResultPath(kTagDumpPath, args.Game, header_name, "interface", "xml");
-				if(false)using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+				if(true)using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
 				{
 					s.WriteStartDocument(true);
 					s.WriteStartElement("interfaceDefinitions");
@@ -283,11 +286,74 @@ namespace BlamLib.Test
 		[TestMethod]
 		public void Halo4DumpMegloData()
 		{
+			BlamVersion game = BlamVersion.Halo4_Xbox;
+
 			CacheFileOutputInfoArgs.TestMethodSerial(TestContext,
 				CacheOutputMegaloInformationMethod,
-				BlamVersion.Halo4_Xbox, kDirectoryXbox, kMapNames_MegaloData);
+				game, kDirectoryXbox, kMapNames_MegaloData);
+
+			string results_path = BuildResultPath(kTagDumpPath, game, "", "settings", "xml");
+			var xml_settings = new System.Xml.XmlWriterSettings();
+			xml_settings.Indent = true;
+			xml_settings.IndentChars = "  ";
+			xml_settings.Encoding = System.Text.Encoding.ASCII;
+			using (var s = System.Xml.XmlTextWriter.Create(results_path, xml_settings))
+			{
+				s.WriteStartDocument(true);
+				s.WriteStartElement("settingsDefinitions");
+				s.WriteAttributeString("game", game.ToString());
+
+				s.WriteStartElement("options");
+				foreach (var kv in Blam.Halo4.Tags.text_value_pair_definition_group.SettingParameters)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("key", kv.Key.ToString());
+					s.WriteAttributeString("value", Path.GetFileName(kv.Value));
+					s.WriteAttributeString("tagName", kv.Value);
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+				s.WriteStartElement("categories");
+				foreach (var kv in Blam.Halo4.Tags.multiplayer_variant_settings_interface_definition_group.SettingCategories)
+				{
+					s.WriteStartElement("entry");
+					s.WriteAttributeString("key", kv.Key.ToString());
+					s.WriteAttributeString("value", Path.GetFileName(kv.Value.TagName));
+					s.WriteAttributeString("title", kv.Value.Title);
+					s.WriteAttributeString("tagName", kv.Value.TagName);
+					s.WriteEndElement();
+				}
+				s.WriteEndElement();
+
+
+				s.WriteEndElement();
+				s.WriteEndDocument();
+			}
 		}
 
+		static void CacheRebuildUnicTagsSeekToLanguagePackData(Blam.Halo4.CacheFile cache)
+		{
+			bool is_patch = cache.IsPatchCache;
+
+			Blam.Cache.CacheItemGen3 tag_containing_header = null;
+			var tag_group_containing_header = is_patch ? GameTagGroups.patg : GameTagGroups.matg;
+			foreach (var tag in cache.IndexHalo4.Tags)
+			{
+				if (tag.GroupTag == tag_group_containing_header)
+				{
+					tag_containing_header = tag as Blam.Cache.CacheItemGen3;
+					break;
+				}
+			}
+			Assert.IsNotNull(tag_containing_header);
+
+			int offset = tag_containing_header.Offset;
+			if (!is_patch)
+				offset += Blam.Cache.CacheFileLanguagePackResourceGen3.kGlobalsOffsetHalo4;
+
+			cache.InputStream.Seek(offset);
+		}
 		static void CacheRebuildUnicTagsMethod(object param)
 		{
 			var args = param as CacheFileOutputInfoArgs;
@@ -301,18 +367,7 @@ namespace BlamLib.Test
 				if (MapNeedsUniqueName(header_name))
 					header_name = cache.GetUniqueName();
 
-				Blam.Cache.CacheItemGen3 game_globals = null;
-				foreach (var tag in cache.IndexHalo4.Tags)
-				{
-					if (tag.GroupTag == GameTagGroups.matg)
-					{
-						game_globals = tag as Blam.Cache.CacheItemGen3;
-						break;
-					}
-				}
-				Assert.IsNotNull(game_globals);
-
-				cache.InputStream.Seek(game_globals.Offset + Blam.Cache.CacheFileLanguagePackResourceGen3.kGlobalsOffsetHalo4);
+				CacheRebuildUnicTagsSeekToLanguagePackData(cache);
 				var lang_pack_english = new Blam.Cache.CacheFileLanguagePackResourceGen3(null);
 				lang_pack_english.Read(cache.InputStream);
 				lang_pack_english.ReadFromCache(cache);
@@ -383,7 +438,21 @@ namespace BlamLib.Test
 		{
 			CacheFileOutputInfoArgs.TestMethodSerial(TestContext,
 				CacheRebuildUnicTagsMethod,
-				BlamVersion.Halo4_Xbox, kDirectoryXbox, @"Retail\maps\mainmenu.map");
+				BlamVersion.HaloReach_Xbox, kDirectoryXbox, @"Retail\maps\mainmenu.map");
+		}
+
+		static readonly string[] kMapNames_Retail_Patches = {
+			@"Retail\maps\patches\mainmenu_patch_TU2.map",
+//			@"Retail\maps\mainmenu.map",
+//			@"Retail\maps\patches\mainmenu_patch_TU3.map",
+//			@"Retail\maps\patches\mainmenu_patch_TU6.map",
+		};
+		[TestMethod]
+		public void Halo4TestCachePatchesXbox()
+		{
+			CacheFileOutputInfoArgs.TestMethodSerial(TestContext,
+				CacheOutputInformationMethod,
+				BlamVersion.Halo4_Xbox, kDirectoryXbox, kMapNames_Retail_Patches);
 		}
 	};
 }
