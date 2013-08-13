@@ -5,6 +5,7 @@
 */
 #pragma warning disable 1591 // "Missing XML comment for publicly visible type or member"
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using TI = BlamLib.TagInterface;
@@ -14,6 +15,18 @@ namespace BlamLib.Blam.HaloReach.Tags
 	#region multiplayer_variant_settings_interface_definition
 	partial class multiplayer_variant_settings_interface_definition_group : ITempToStreamInterface, ITempToXmlStreamInterface
 	{
+		public struct CategoryInfo
+		{
+			public string Title;
+			public string TagName;
+
+			public CategoryInfo(string title, string tag)
+			{
+				Title = title;
+				TagName = tag;
+			}
+		}
+		public static SortedList<int, CategoryInfo> SettingCategories = new SortedList<int, CategoryInfo>();
 		#region multiplayer_variant_settings_interface_definition_0_block
 		partial class multiplayer_variant_settings_interface_definition_0_block
 		{
@@ -72,7 +85,21 @@ namespace BlamLib.Blam.HaloReach.Tags
 					if (!Description.Handle.IsNull)
 						s.WriteAttributeString("descId", Description.ToString());
 					if (Unknown20 != 0)
+					{
 						s.WriteAttributeString("settingCategory", Unknown20.ToString());
+						if (!SettingCategories.ContainsKey(Unknown20.Value))
+						{
+							string title = Title.ToString();
+							string tagname = null;
+
+							if (!Settings.Datum.IsNull)
+								tagname = Settings.GetTagPath();
+							else if (!Template.Datum.IsNull)
+								tagname = Template.GetTagPath();
+
+							SettingCategories[Unknown20.Value] = new CategoryInfo(title, tagname);
+						}
+					}
 
 					if (!Settings.Datum.IsNull)
 						s.WriteElementString("settings", Settings.GetTagPath());
@@ -108,7 +135,10 @@ namespace BlamLib.Blam.HaloReach.Tags
 			{
 				s.WriteStartElement("entry");
 				s.WriteAttributeString("settingCategory", SettingCategory.Value.ToString());
-				s.WriteAttributeString("name", Name.ToString());
+				string name = Name.ToString();
+				s.WriteAttributeString("name", name);
+
+				SettingCategories[SettingCategory.Value] = new CategoryInfo(name, tag.Name);
 
 				s.WriteStartElement("options");
 				foreach (var opt in Options)
@@ -210,6 +240,7 @@ namespace BlamLib.Blam.HaloReach.Tags
 			s.WriteLine();
 		}
 
+		public static SortedList<int, string> SettingParameters = new SortedList<int, string>();
 		public void ToStream(XmlWriter s,
 				Managers.TagManager tag, TI.Definition owner)
 		{
@@ -218,6 +249,9 @@ namespace BlamLib.Blam.HaloReach.Tags
 			{
 				s.WriteAttributeString("titleId", Title.ToString());
 				if(!Description.Handle.IsNull) s.WriteAttributeString("descId", Description.ToString());
+				s.WriteAttributeString("param", Parameter.ToString());
+
+				SettingParameters[Parameter.Value] = tag.Name;
 
 				s.WriteStartElement("values");
 				s.WriteAttributeString("type", Values[0].Type.ToString());
